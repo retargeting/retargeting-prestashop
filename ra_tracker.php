@@ -25,9 +25,8 @@ defined('_PS_VERSION_') OR exit('No direct script access allowed');
  * @copyright 2014-2018 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
-require_once __DIR__ . '/vendor/autoload.php';
 
-use RetargetingSDK\Javascript\Builder;
+require_once(__DIR__ . '/vendor/autoload.php');
 
 /**
  * Class Ra_Tracker
@@ -92,7 +91,7 @@ class Ra_Tracker extends Module
         $this->description      = $this->l('Retargeting is a marketing automation tool that boosts the conversion rate and sales of your online store.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall Retargeting Tracker? You will lose all the data related to this module.');
 
-        $this->_raJSBuilder = new Builder();
+        $this->_raJSBuilder = new RetargetingSDK\Javascript\Builder();
 
         if (!$this->isTrackingApiKeyProvided())
         {
