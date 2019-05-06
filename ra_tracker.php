@@ -45,9 +45,25 @@ class Ra_Tracker extends Module
             'id'    => 'ra_rest_key',
             'json'  => false,
         ],
+        'cartBtnId'     => [
+            'id'    => 'ra_cart_btn_id',
+            'json'  => false,
+        ],
+        'priceLabelId'  => [
+            'id'    => 'ra_price_label_id',
+            'json'  => false,
+        ],
         'helpPages'     => [
             'id'    => 'ra_help_pages',
             'json'  => true
+        ],
+        'productsFeed'  => [
+            'id'    => 'ra_products_feed',
+            'json'  => false
+        ],
+        'customersFeed' => [
+            'id'    => 'ra_customers_feed',
+            'json'  => false
         ]
     ];
 
@@ -186,25 +202,50 @@ class Ra_Tracker extends Module
     }
 
     /**
-     * @return void
+     * @return string|null
      */
     public function hookDisplayHeader()
     {
         if($this->_raJSBuilder->hasTrackingApiKey())
         {
-            $js = [
-                'ra_tracker',
-                $this->_raJSBuilder->getTrackingSrc(),
+            $this->_raJSBuilder->setAddToCardId($this->getConfigParam('cartBtnId'));
+            $this->_raJSBuilder->setPriceLabelId($this->getConfigParam('priceLabelId'));
+
+            $scripts = [
+                /*[
+                    'ra_tracker_1',
+                    $this->_raJSBuilder->getTrackingSrc(),
+                    [
+                        'position'      => 'head',
+                        'priority'      => 1001,
+                        'inline'        => false,
+                        'server'        => 'remote',
+                        'attributes'    => 'async'
+                    ]
+                ],*/
                 [
-                    'position'      => 'bottom',
-                    'priority'      => 1001,
-                    'inline'        => false,
-                    'server'        => 'remote',
-                    'attributes'    => 'async'
+                    'ra_tracker_2',
+                    ( 'modules/' . $this->name . '/views/js/ra_tracker.js' ),
+                    [
+                        'position'      => 'bottom',
+                        'priority'      => 1001,
+                        'inline'        => false,
+                        'server'        => 'local',
+                        'attributes'    => 'async'
+                    ]
                 ]
             ];
 
-            call_user_func_array([$this->context->controller, 'registerJavascript'], $js);
+            foreach ($scripts AS $script)
+            {
+                call_user_func_array([$this->context->controller, 'registerJavascript'], $script);
+            }
+
+            return '<script type="text/javascript">' . $this->_raJSBuilder->getTrackingCode() . '</script>';
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -723,6 +764,18 @@ class Ra_Tracker extends Module
             ],
             'input' => [
                 [
+                    'type'      => 'text',
+                    'label'     => $this->l('Add to cart button ID'),
+                    'name'      => $this->_raConfigParams['cartBtnId']['id'],
+                    'desc'      => 'For more info check <a href="https://retargeting.biz/general-implementation-abandoned-cart#javascript-tracking-code" target="_blank">documentation</a>.'
+                ],
+                [
+                    'type'      => 'text',
+                    'label'     => $this->l('Price label id'),
+                    'name'      => $this->_raConfigParams['priceLabelId']['id'],
+                    'desc'      => 'For more info check <a href="https://retargeting.biz/general-implementation-abandoned-cart#javascript-tracking-code" target="_blank">documentation</a>.'
+                ],
+                [
                     'type'      => 'select',
                     'label'     => $this->l('Help Pages'),
                     'name'      => $this->_raConfigParams['helpPages']['id'],
@@ -733,6 +786,46 @@ class Ra_Tracker extends Module
                         'query' => CMS::listCMS(),
                         'id'    => 'id_cms',
                         'name'  => 'meta_title'
+                    ]
+                ],
+                [
+                    'type'      => 'switch',
+                    'label'     => $this->l('Products Feed'),
+                    'desc'      => '<b>' . $this->l('URL') . ':</b> ' . $this->context->link->getModuleLink('ra_tracker', 'ProductsFeed', [], true),
+                    'name'      => $this->_raConfigParams['productsFeed']['id'],
+                    'is_bool'   => true,
+                    'required'  => false,
+                    'values'    => [
+                        [
+                            'id' => $this->_raConfigParams['productsFeed']['id'] . '_on',
+                            'value' => 1,
+                            'label' => $this->trans('Enabled', [], 'Admin.Global')
+                        ],
+                        [
+                            'id' => $this->_raConfigParams['productsFeed']['id'] . '_off',
+                            'value' => 0,
+                            'label' => $this->trans('Disabled', [], 'Admin.Global')
+                        ]
+                    ]
+                ],
+                [
+                    'type'      => 'switch',
+                    'label'     => $this->l('Customers Feed'),
+                    'desc'      => '<b>' . $this->l('URL') . ':</b> ' . $this->context->link->getModuleLink('ra_tracker', 'CustomersFeed', [], true),
+                    'name'      => $this->_raConfigParams['customersFeed']['id'],
+                    'is_bool'   => true,
+                    'required'  => false,
+                    'values'    => [
+                        [
+                            'id' => $this->_raConfigParams['customersFeed']['id'] . '_on',
+                            'value' => 1,
+                            'label' => $this->trans('Enabled', [], 'Admin.Global')
+                        ],
+                        [
+                            'id' => $this->_raConfigParams['customersFeed']['id'] . '_off',
+                            'value' => 0,
+                            'label' => $this->trans('Disabled', [], 'Admin.Global')
+                        ]
                     ]
                 ]
             ],
