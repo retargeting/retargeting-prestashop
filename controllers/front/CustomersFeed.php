@@ -1,12 +1,32 @@
 <?php
-
-
-require_once( __DIR__ . '/../../vendor/autoload.php');
+/**
+ * 2014-2019 Retargeting BIZ SRL
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@retargeting.biz so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Retargeting SRL <info@retargeting.biz>
+ * @copyright 2014-2019 Retargeting SRL
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
 /**
- * Class ra_trackerCustomersFeedModuleFrontController
+ * Class rtg_trackerCustomersFeedModuleFrontController
  */
-class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
+class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontController
 {
     /**
      * @var bool
@@ -44,6 +64,11 @@ class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
     private $_onlyActive = false;
 
     /**
+     * @var null
+     */
+    private $_token = null;
+
+    /**
      * ra_trackerProductsFeedModuleFrontController constructor.
      */
     public function __construct()
@@ -63,49 +88,54 @@ class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
     {
         if($this->isFeedEnabled())
         {
-            $raCustomersFeed = new \RetargetingSDK\CustomersFeed('test');
-
-            foreach ($this->getCustomers() AS $customer)
+            if(!empty($this->_token))
             {
-                $raCustomer = new \RetargetingSDK\Customer();
-                $raCustomer->setFirstName($customer['firstname']);
-                $raCustomer->setLastName($customer['lastname']);
-                $raCustomer->setEmail($customer['email']);
-                $raCustomer->setStatus($customer['active'] == 1);
+                $raCustomersFeed = new \RetargetingSDK\CustomersFeed($this->_token);
 
-                // TO DO
-                // $raCustomer->setPhone(null);
+                foreach ($this->getCustomers() AS $customer)
+                {
+                    $raCustomer = new \RetargetingSDK\Customer();
+                    $raCustomer->setFirstName($customer['firstname']);
+                    $raCustomer->setLastName($customer['lastname']);
+                    $raCustomer->setEmail($customer['email']);
+                    $raCustomer->setStatus($customer['active'] == 1);
 
-                $raCustomersFeed->addCustomer($raCustomer->getData(true));
+                    // TO DO
+                    // $raCustomer->setPhone(null);
+
+                    $raCustomersFeed->addCustomer($raCustomer->getData(true));
+                }
+
+                // Module link with per_page param
+                $moduleLink = RTGLinkHelper::getModuleLink('CustomersFeed', [ 'per_page' => $this->_perPage ]);
+
+                // Previous page
+                $prevPage = $this->_currentPage - 1;
+
+                if($prevPage < 1)
+                {
+                    $prevPage = $this->_currentPage;
+                }
+
+                // Next page
+                $nextPage = $this->_currentPage + 1;
+
+                if($nextPage > $this->_lastPage)
+                {
+                    $nextPage = $this->_lastPage;
+                }
+
+                $raCustomersFeed->setCurrentPage($this->_currentPage);
+                $raCustomersFeed->setPrevPage($moduleLink . '&page=' . $prevPage);
+                $raCustomersFeed->setNextPage($moduleLink . '&page=' . $nextPage);
+                $raCustomersFeed->setLastPage($this->_lastPage);
+
+                echo $raCustomersFeed->getData();
             }
-
-            // Module link with per_page param
-            $moduleLink = $this->context->link->getModuleLink('ra_tracker', 'CostumersFeed', [
-                'per_page' => $this->_perPage
-            ], true);
-
-            // Previous page
-            $prevPage = $this->_currentPage - 1;
-
-            if($prevPage < 1)
+            else
             {
-                $prevPage = $this->_currentPage;
+                echo 'Token arg is missing or is empty!';
             }
-
-            // Next page
-            $nextPage = $this->_currentPage + 1;
-
-            if($nextPage > $this->_lastPage)
-            {
-                $nextPage = $this->_lastPage;
-            }
-
-            $raCustomersFeed->setCurrentPage($this->_currentPage);
-            $raCustomersFeed->setPrevPage($moduleLink . '&page=' . $prevPage);
-            $raCustomersFeed->setNextPage($moduleLink . '&page=' . $nextPage);
-            $raCustomersFeed->setLastPage($this->_lastPage);
-
-            echo $raCustomersFeed->getData();
         }
         else
         {
@@ -159,6 +189,14 @@ class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
         {
             $this->_perPage = $perPage;
         }
+
+        // Token
+        $token = Tools::getValue('token');
+
+        if(!empty($token))
+        {
+            $this->_token = $token;
+        }
     }
 
     /**
@@ -174,10 +212,10 @@ class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
             $sql .= '  WHERE c.`active` = 1';
         }
 
-        $result = Db::getInstance()->getRow($sql);
+        $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
-        $this->_totalRows = $result['total'];
-        $this->_lastPage  = $result['total'] > 0 ? ceil($result['total'] / $this->_perPage) : 1;
+        $this->_totalRows = $row['total'];
+        $this->_lastPage  = $row['total'] > 0 ? ceil($row['total'] / $this->_perPage) : 1;
     }
 
     /**
@@ -185,7 +223,7 @@ class ra_trackerCustomersFeedModuleFrontController extends ModuleFrontController
      */
     private function isFeedEnabled()
     {
-        $paramVal = Configuration::get('ra_customers_feed');
+        $paramVal = RTGConfigHelper::getParamValue('customersFeed');
 
         return (int) $paramVal > 0;
     }

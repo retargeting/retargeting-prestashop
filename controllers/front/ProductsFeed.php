@@ -1,11 +1,32 @@
 <?php
-
-require_once( __DIR__ . '/../../vendor/autoload.php');
+/**
+ * 2014-2019 Retargeting BIZ SRL
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to info@retargeting.biz so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    Retargeting SRL <info@retargeting.biz>
+ * @copyright 2014-2019 Retargeting SRL
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
 /**
- * Class ra_trackerProductsFeedModuleFrontController
+ * Class rtg_trackerProductsFeedModuleFrontController
  */
-class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
+class rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 {
     /**
      * @var bool
@@ -57,57 +78,17 @@ class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
     {
         if($this->isFeedEnabled())
         {
-            $raProductFeed = new \RetargetingSDK\ProductFeed();
+            $RTGProductFeed = new \RetargetingSDK\ProductFeed();
 
-            foreach ($this->getProducts() AS $product)
+            foreach ($this->getProductIds() AS $productId)
             {
-                $raProduct = new \RetargetingSDK\Product();
-                $raProduct->setId($product['id_product']);
-                $raProduct->setName($product['name']);
-                $raProduct->setUrl($product['link']);
-                $raProduct->setPrice($product['price_without_reduction']);
+                $RTGProduct = new RTGProductModel($productId);
 
-                $image = Image::getCover($product['id_product']);
-
-                $raProduct->setImg(
-                    $this->context->link->getImageLink($product['link_rewrite'], $image['id_image'], 'large')
-                );
-
-                if($product['price_without_reduction'] != $product['price'])
-                {
-                    $raProduct->setPromo($product['price']);
-                }
-
-                if(!empty($product['id_manufacturer']) && !empty($product['manufacturer_name']))
-                {
-                    $raProduct->setBrand([
-                        'id'    => $product['id_manufacturer'],
-                        'name'  => $product['manufacturer_name']
-                    ]);
-                }
-
-                if(!empty($product['id_category_default']))
-                {
-                    $raCategory = $this->getCategory($product['id_category_default']);
-
-                    if($raCategory instanceof \RetargetingSDK\Category)
-                    {
-                        $raProduct->setCategory([ $raCategory->getData(false) ]);
-                    }
-                }
-
-                $raProduct->setInventory([
-                    'variations' => false,
-                    'stock'      => $product['quantity_all_versions'] > 0
-                ]);
-
-                $raProductFeed->addProduct($raProduct->getData(false));
+                $RTGProductFeed->addProduct($RTGProduct->getData(false));
             }
 
             // Module link with per_page param
-            $moduleLink = $this->context->link->getModuleLink('ra_tracker', 'ProductFeed', [
-                'per_page' => $this->_perPage
-            ], true);
+            $moduleLink = RTGLinkHelper::getModuleLink('ProductFeed', [ 'per_page' => $this->_perPage ]);
 
             // Previous page
             $prevPage = $this->_currentPage - 1;
@@ -125,12 +106,12 @@ class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $nextPage = $this->_lastPage;
             }
 
-            $raProductFeed->setCurrentPage($this->_currentPage);
-            $raProductFeed->setPrevPage($moduleLink . '&page=' . $prevPage);
-            $raProductFeed->setNextPage($moduleLink . '&page=' . $nextPage);
-            $raProductFeed->setLastPage($this->_lastPage);
+            $RTGProductFeed->setCurrentPage($this->_currentPage);
+            $RTGProductFeed->setPrevPage($moduleLink . '&page=' . $prevPage);
+            $RTGProductFeed->setNextPage($moduleLink . '&page=' . $nextPage);
+            $RTGProductFeed->setLastPage($this->_lastPage);
 
-            echo $raProductFeed->getData();
+            echo $RTGProductFeed->getData();
         }
         else
         {
@@ -141,86 +122,19 @@ class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
     }
 
     /**
-     * Get products list
-     *
      * @return array
+     * @throws PrestaShopDatabaseException
      */
-    protected function getProducts()
+    protected function getProductIds()
     {
-        $products = Product::getProducts(
-            (int)$this->context->language->id,
-            ( ($this->_currentPage - 1) * $this->_perPage ),
-            $this->_perPage,
-            'id_product',
-            'ASC',
-            false,
-            true,
-            null
-        );
+        $sql  = 'SELECT `id_product` ';
+        $sql .= 'FROM `' . _DB_PREFIX_ . 'product` ';
+        $sql .= 'WHERE `active` = 1 AND `available_for_order` = 1 ';
+        $sql .= 'LIMIT ' . ( ($this->_currentPage - 1) * $this->_perPage ) . ', ' . $this->_perPage;
 
-        return Product::getProductsProperties(
-            $this->context->language->id,
-            $products
-        );
-    }
+        $rows = DB::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
 
-    /**
-     * @param $categoryId
-     * @return \RetargetingSDK\Category
-     * @throws Exception
-     */
-    protected function getCategory($categoryId)
-    {
-        $raCategory    = null;
-        $categoryModel = new Category($categoryId, $this->context->language->id);
-
-        if(Validate::isLoadedObject($categoryModel))
-        {
-            $raCategory = new \RetargetingSDK\Category();
-            $raCategory->setId($categoryModel->id);
-            $raCategory->setName($categoryModel->name);
-            $raCategory->setUrl($this->context->link->getCategoryLink($categoryModel->id));
-
-            if(!empty($categoryModel->id_parent))
-            {
-                $raCategoryBreadcrumbs = [];
-
-                $parentsCategories = $categoryModel->getParentsCategories($this->context->language->id);
-
-                foreach ($parentsCategories AS $pCategoryIdx => $pCategory)
-                {
-                    if(
-                        isset($pCategory['id_category'])
-                        && is_string($pCategory['name'])
-                        && (int)$pCategory['active'] === 1
-                        && $pCategory['id_category'] != $categoryModel->id
-                        && $pCategory['is_root_category'] < 1
-                    )
-                    {
-                        $parentId = $pCategory['id_parent'];
-
-                        if(!empty($parentsCategories[$pCategoryIdx + 1]) && $parentsCategories[$pCategoryIdx + 1]['is_root_category'] > 0)
-                        {
-                            $parentId = false;
-                        }
-
-                        $raCategoryBreadcrumbs[] = [
-                            'id'     => $pCategory['id_category'],
-                            'name'   => $pCategory['name'],
-                            'parent' => $parentId
-                        ];
-                    }
-                }
-
-                if(!empty($raCategoryBreadcrumbs))
-                {
-                    $raCategory->setParent($categoryModel->id_parent);
-                    $raCategory->setBreadcrumb($raCategoryBreadcrumbs);
-                }
-            }
-        }
-
-        return $raCategory;
+        return array_column($rows, 'id_product');
     }
 
     /**
@@ -250,10 +164,14 @@ class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
      */
     private function setTotalRows()
     {
-        $result = Db::getInstance()->getRow('SELECT COUNT(DISTINCT p.`id_product`) AS total FROM `'._DB_PREFIX_.'product` p WHERE p.`active` = 1');
+        $sql  = 'SELECT COUNT(DISTINCT p.`id_product`) AS total ';
+        $sql .= 'FROM `' . _DB_PREFIX_ . 'product` p ';
+        $sql .= 'WHERE `active` = 1 AND `available_for_order` = 1';
 
-        $this->_totalRows = $result['total'];
-        $this->_lastPage  = $result['total'] > 0 ? ceil($result['total'] / $this->_perPage) : 1;
+        $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+
+        $this->_totalRows = $row['total'];
+        $this->_lastPage  = $row['total'] > 0 ? ceil($row['total'] / $this->_perPage) : 1;
     }
 
     /**
@@ -261,7 +179,7 @@ class ra_trackerProductsFeedModuleFrontController extends ModuleFrontController
      */
     private function isFeedEnabled()
     {
-        $paramVal = Configuration::get('ra_products_feed');
+        $paramVal = Configuration::get('rtg_products_feed');
 
         return (int) $paramVal > 0;
     }
