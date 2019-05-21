@@ -38,7 +38,7 @@ class RTGConfigHelper
     /**
      * Minimum version of Prestashop
      */
-    const MINIMUM_VERSION = '1.6.1.11';
+    const MINIMUM_VERSION = '1.6.1.10';
 
     /**
      * Maximum version of Prestashop
