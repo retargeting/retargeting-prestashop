@@ -36,6 +36,11 @@ class RTGConfigHelper
     const MODULE_VERSION = '1.0.0';
 
     /**
+     * Module key
+     */
+    const MODULE_KEY = '07f632866f76537ce3f8f01eedad4f00';
+
+    /**
      * Minimum version of Prestashop
      */
     const MINIMUM_VERSION = '1.6.1.10';

@@ -49,6 +49,7 @@ class RTG_Tracker extends Module
         $this->author                   = 'Retargeting BIZ';
         $this->need_instance            = 0;
         $this->bootstrap                = true;
+        $this->module_key               = RTGConfigHelper::MODULE_KEY;
         $this->ps_versions_compliancy   = [
             'min' => RTGConfigHelper::MINIMUM_VERSION,
             'max' => RTGConfigHelper::MAXIMUM_VERSION
