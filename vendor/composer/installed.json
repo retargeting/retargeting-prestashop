@@ -1,17 +1,17 @@
 [
     {
         "name": "retargeting/retargeting-sdk",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "dev-development",
+        "version_normalized": "dev-development",
         "source": {
             "type": "git",
             "url": "https://github.com/retargeting/php-sdk.git",
-            "reference": "747a81ea4f1618df94c5292e731e901ac7d63089"
+            "reference": "c2ac128e0f5b3b7468e332f8c3c18485de09a42b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/retargeting/php-sdk/zipball/747a81ea4f1618df94c5292e731e901ac7d63089",
-            "reference": "747a81ea4f1618df94c5292e731e901ac7d63089",
+            "url": "https://api.github.com/repos/retargeting/php-sdk/zipball/c2ac128e0f5b3b7468e332f8c3c18485de09a42b",
+            "reference": "c2ac128e0f5b3b7468e332f8c3c18485de09a42b",
             "shasum": ""
         },
         "require": {
@@ -24,7 +24,7 @@
             "mockery/mockery": "^1.0",
             "phpunit/phpunit": "8.0"
         },
-        "time": "2019-04-15T15:35:59+00:00",
+        "time": "2019-05-24T11:45:44+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {

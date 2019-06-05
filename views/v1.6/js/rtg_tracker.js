@@ -29,16 +29,26 @@
     {
         var dataOb = {};
 
-        settings.data.replace(/([^=&]+)=([^&]*)/g, function(m, key, value)
+        if (settings.data instanceof FormData)
         {
-            dataOb[decodeURIComponent(key)] = decodeURIComponent(value);
-        });
+            for(var pair of settings.data.entries())
+            {
+                dataOb[pair[0]] = pair[1];
+            }
+        }
+        else if(typeof settings.data === 'string')
+        {
+            settings.data.replace(/([^=&]+)=([^&]*)/g, function(m, key, value)
+            {
+                dataOb[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+        }
 
         if(dataOb.hasOwnProperty('controller') && dataOb.controller === 'cart' && dataOb.hasOwnProperty('id_product'))
         {
             if(typeof _ra === "undefined")
             {
-                _ra = {};
+                var _ra = {};
             }
 
             if(dataOb.hasOwnProperty('add'))

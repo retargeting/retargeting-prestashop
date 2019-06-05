@@ -196,7 +196,7 @@ class RTG_Tracker extends Module
                 {
                     call_user_func_array([$this, 'prepare' . ucfirst($controller) . 'JS'], $fnParams);
 
-                    $output = RTGContextHelper::getJSBuilder()->generate();
+                    $output = RTGContextHelper::getRecommendationEngine()->generateTags() . RTGContextHelper::getJSBuilder()->generate();
                 }
                 catch (\RetargetingSDK\Exceptions\RTGException $exception)
                 {
@@ -217,6 +217,7 @@ class RTG_Tracker extends Module
     protected function prepareIndexJS()
     {
         RTGContextHelper::getJSBuilder()->visitHomePage();
+        RTGContextHelper::getRecommendationEngine()->markHomePage();
     }
 
     /**
@@ -232,6 +233,7 @@ class RTG_Tracker extends Module
             $RTGCategory = new RTGCategoryModel($categoryId);
 
             RTGContextHelper::getJSBuilder()->sendCategory($RTGCategory);
+            RTGContextHelper::getRecommendationEngine()->markCategoryPage();
         }
         else
         {
@@ -254,6 +256,7 @@ class RTG_Tracker extends Module
 
             RTGContextHelper::getJSBuilder()->sendProduct($RTGProduct);
             RTGContextHelper::getJSBuilder()->likeFacebook($RTGProduct->getId());
+            RTGContextHelper::getRecommendationEngine()->markProductPage();
         }
         else
         {
@@ -323,6 +326,7 @@ class RTG_Tracker extends Module
         $RTGOrder = new RTGOrderModel($orderId);
 
         RTGContextHelper::getJSBuilder()->saveOrder($RTGOrder);
+        RTGContextHelper::getRecommendationEngine()->markThankYouPage();
     }
 
     /**
@@ -350,6 +354,8 @@ class RTG_Tracker extends Module
         {
             RTGContextHelper::getJSBuilder()->sendSearchTerm($searchTerm);
         }
+
+        RTGContextHelper::getRecommendationEngine()->markSearchPage();
     }
 
     /**
@@ -358,6 +364,7 @@ class RTG_Tracker extends Module
     protected function preparePagenotfoundJS()
     {
         RTGContextHelper::getJSBuilder()->pageNotFound();
+        RTGContextHelper::getRecommendationEngine()->markNotFoundPage();
     }
 
     /**

@@ -34,6 +34,11 @@ class RTGContextHelper
     private static $JSBuilderInstance;
 
     /**
+     * @var null|\RetargetingSDK\RecommendationEngine;
+     */
+    private static $RecommendationEngineInstance;
+
+    /**
      * @return AdminController|FrontController
      */
     public static function getController()
@@ -76,5 +81,18 @@ class RTGContextHelper
         }
 
         return self::$JSBuilderInstance;
+    }
+
+    /**
+     * @return \RetargetingSDK\RecommendationEngine|null
+     */
+    public static function getRecommendationEngine()
+    {
+        if (!self::$RecommendationEngineInstance instanceof \RetargetingSDK\RecommendationEngine)
+        {
+            self::$RecommendationEngineInstance = new \RetargetingSDK\RecommendationEngine();
+        }
+
+        return self::$RecommendationEngineInstance;
     }
 }

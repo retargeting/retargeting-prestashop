@@ -9,6 +9,6 @@
         }
     ],
     "require": {
-        "retargeting/retargeting-sdk": "@dev"
+        "retargeting/retargeting-sdk": "dev-development"
     }
 }
