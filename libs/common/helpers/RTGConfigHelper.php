@@ -53,7 +53,7 @@ class RTGConfigHelper
     /**
      * Enable/disable debugging
      */
-    const ENABLE_DEBUG = true;
+    const ENABLE_DEBUG = false;
 
     /**
      * @var array

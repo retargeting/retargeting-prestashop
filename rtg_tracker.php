@@ -202,7 +202,9 @@ class RTG_Tracker extends Module
                 {
                     if(RTGConfigHelper::ENABLE_DEBUG)
                     {
-                        echo '<pre>'; print_r($exception->__toString()); echo '</pre>';
+                        PrestaShopLogger::addLog(
+                            '[RTG Tracker] ' . $exception->getMessage() . ' in file ' . $exception->getFile() . ' on line ' . $exception->getLine()
+                        );
                     }
                 }
             }
@@ -235,10 +237,10 @@ class RTG_Tracker extends Module
             RTGContextHelper::getJSBuilder()->sendCategory($RTGCategory);
             RTGContextHelper::getRecommendationEngine()->markCategoryPage();
         }
-//        else
-//        {
-//            throw new \RetargetingSDK\Exceptions\RTGException('Missing category id from data!');
-//        }
+        else
+        {
+            throw new \RetargetingSDK\Exceptions\RTGException('Missing category id from data!');
+        }
     }
 
     /**
@@ -258,10 +260,10 @@ class RTG_Tracker extends Module
             RTGContextHelper::getJSBuilder()->likeFacebook($RTGProduct->getId());
             RTGContextHelper::getRecommendationEngine()->markProductPage();
         }
-//        else
-//        {
-//            throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
-//        }
+        else
+        {
+            throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
+        }
     }
 
     /**
@@ -278,10 +280,10 @@ class RTG_Tracker extends Module
 
             RTGContextHelper::getJSBuilder()->sendBrand($RTGManufacturer);
         }
-//        else
-//        {
-//            throw new \RetargetingSDK\Exceptions\RTGException('Missing manufacturer id from data!');
-//        }
+        else
+        {
+            throw new \RetargetingSDK\Exceptions\RTGException('Missing manufacturer id from data!');
+        }
     }
 
     /**
@@ -380,10 +382,10 @@ class RTG_Tracker extends Module
 
             RTGContextHelper::getJSBuilder()->setEmail($RTGCustomer);
         }
-//        else
-//        {
-//            throw new \RetargetingSDK\Exceptions\RTGException('Missing customer id from data!');
-//        }
+        else
+        {
+            throw new \RetargetingSDK\Exceptions\RTGException('Missing customer id from data!');
+        }
     }
 
     /**
