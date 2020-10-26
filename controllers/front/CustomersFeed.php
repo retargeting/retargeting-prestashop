@@ -24,9 +24,9 @@
  */
 
 /**
- * Class rtg_trackerCustomersFeedModuleFrontController
+ * Class Rtg_trackerCustomersFeedModuleFrontController
  */
-class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontController
+class Rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontController
 {
     /**
      * @var bool
@@ -41,32 +41,32 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
     /**
      * @var int
      */
-    private $_currentPage = 1;
+    private $currentPage = 1;
 
     /**
      * @var int
      */
-    private $_lastPage = 1;
+    private $lastPage = 1;
 
     /**
      * @var int
      */
-    private $_perPage = 100;
+    private $perPage = 100;
 
     /**
      * @var int
      */
-    private $_totalRows = 0;
+    private $totalRows = 0;
 
     /**
      * @var bool
      */
-    private $_onlyActive = false;
+    private $onlyActive = false;
 
     /**
      * @var null
      */
-    private $_token = null;
+    private $token = null;
 
     /**
      * ra_trackerProductsFeedModuleFrontController constructor.
@@ -86,14 +86,11 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
      */
     public function initContent()
     {
-        if($this->isFeedEnabled())
-        {
-            if(!empty($this->_token))
-            {
+        if ($this->isFeedEnabled()) {
+            if (!empty($this->_token)) {
                 $raCustomersFeed = new \RetargetingSDK\CustomersFeed($this->_token);
 
-                foreach ($this->getCustomers() AS $customer)
-                {
+                foreach ($this->getCustomers() as $customer) {
                     $raCustomer = new \RetargetingSDK\Customer();
                     $raCustomer->setFirstName($customer['firstname']);
                     $raCustomer->setLastName($customer['lastname']);
@@ -107,38 +104,32 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
                 }
 
                 // Module link with per_page param
-                $moduleLink = RTGLinkHelper::getModuleLink('CustomersFeed', [ 'per_page' => $this->_perPage ]);
+                $moduleLink = RTGLinkHelper::getModuleLink('CustomersFeed', [ 'per_page' => $this->perPage ]);
 
                 // Previous page
-                $prevPage = $this->_currentPage - 1;
+                $prevPage = $this->currentPage - 1;
 
-                if($prevPage < 1)
-                {
-                    $prevPage = $this->_currentPage;
+                if ($prevPage < 1) {
+                    $prevPage = $this->currentPage;
                 }
 
                 // Next page
-                $nextPage = $this->_currentPage + 1;
+                $nextPage = $this->currentPage + 1;
 
-                if($nextPage > $this->_lastPage)
-                {
-                    $nextPage = $this->_lastPage;
+                if ($nextPage > $this->lastPage) {
+                    $nextPage = $this->lastPage;
                 }
 
-                $raCustomersFeed->setCurrentPage($this->_currentPage);
+                $raCustomersFeed->setCurrentPage($this->currentPage);
                 $raCustomersFeed->setPrevPage($moduleLink . '&page=' . $prevPage);
                 $raCustomersFeed->setNextPage($moduleLink . '&page=' . $nextPage);
-                $raCustomersFeed->setLastPage($this->_lastPage);
+                $raCustomersFeed->setLastPage($this->lastPage);
 
                 echo $raCustomersFeed->getData();
-            }
-            else
-            {
+            } else {
                 echo 'Token arg is missing or is empty!';
             }
-        }
-        else
-        {
+        } else {
             echo 'This feed is disabled!';
         }
 
@@ -151,15 +142,14 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
      */
     protected function getCustomers()
     {
-        $offset = ($this->_currentPage - 1) * $this->_perPage;
-        $limit  = $this->_perPage;
+        $offset = ($this->currentPage - 1) * $this->perPage;
+        $limit  = $this->perPage;
 
         $sql  = 'SELECT `id_customer`, `email`, `firstname`, `lastname`, `active` ';
         $sql .= 'FROM `' . _DB_PREFIX_ . 'customer` ';
         $sql .= 'WHERE 1 ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . ' ';
 
-        if($this->_onlyActive)
-        {
+        if ($this->onlyActive) {
             $sql .= 'AND `active` = 1 ';
         }
 
@@ -177,25 +167,22 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
         // Current page
         $currentPage = (int) Tools::getValue('page');
 
-        if($currentPage > 0)
-        {
-            $this->_currentPage = $currentPage;
+        if ($currentPage > 0) {
+            $this->currentPage = $currentPage;
         }
 
         // Per page
         $perPage = (int) Tools::getValue('per_page');
 
-        if($perPage > 0 && $perPage <= 500)
-        {
-            $this->_perPage = $perPage;
+        if ($perPage > 0 && $perPage <= 500) {
+            $this->perPage = $perPage;
         }
 
         // Token
         $token = Tools::getValue('token');
 
-        if(!empty($token))
-        {
-            $this->_token = $token;
+        if (!empty($token)) {
+            $this->token = $token;
         }
     }
 
@@ -207,15 +194,14 @@ class rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
         $sql  = 'SELECT COUNT(DISTINCT c.`id_customer`) AS total ';
         $sql .= 'FROM `'._DB_PREFIX_.'customer` c';
 
-        if($this->_onlyActive)
-        {
+        if ($this->onlyActive) {
             $sql .= '  WHERE c.`active` = 1';
         }
 
         $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
-        $this->_totalRows = $row['total'];
-        $this->_lastPage  = $row['total'] > 0 ? ceil($row['total'] / $this->_perPage) : 1;
+        $this->totalRows = $row['total'];
+        $this->lastPage  = $row['total'] > 0 ? ceil($row['total'] / $this->perPage) : 1;
     }
 
     /**

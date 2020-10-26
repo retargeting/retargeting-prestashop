@@ -55,11 +55,41 @@ class RTGContextHelper
     }
 
     /**
+     * @param null $param
+     * @return array
+     */
+    public static function getLanguages($param = null)
+    {
+        $languages = Language::getLanguages(self::getShop('id'));
+
+        if (!empty($param)) {
+            return !empty($languages) ? array_column($languages, $param) : [];
+        }
+
+        return $languages;
+    }
+
+    /**
      * @return int|null
      */
     public static function getLanguageId()
     {
         return self::getLanguage() ? (int)self::getLanguage()->id : null;
+    }
+
+    /**
+     * @param null $param
+     * @return Shop|null
+     */
+    public static function getShop($param = null)
+    {
+        $shop = Context::getContext()->shop;
+
+        if (!empty($param)) {
+            return $shop && !empty($shop->{$param}) ? $shop->{$param} : null;
+        }
+
+        return $shop;
     }
 
     /**
@@ -75,8 +105,7 @@ class RTGContextHelper
      */
     public static function getJSBuilder()
     {
-        if (!self::$JSBuilderInstance instanceof \RetargetingSDK\Javascript\Builder)
-        {
+        if (!self::$JSBuilderInstance instanceof \RetargetingSDK\Javascript\Builder) {
             self::$JSBuilderInstance = new \RetargetingSDK\Javascript\Builder();
         }
 
@@ -88,11 +117,59 @@ class RTGContextHelper
      */
     public static function getRecommendationEngine()
     {
-        if (!self::$RecommendationEngineInstance instanceof \RetargetingSDK\RecommendationEngine)
-        {
+        if (!self::$RecommendationEngineInstance instanceof \RetargetingSDK\RecommendationEngine) {
             self::$RecommendationEngineInstance = new \RetargetingSDK\RecommendationEngine();
         }
 
         return self::$RecommendationEngineInstance;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllLanguages() {
+
+        $languages = Language::getLanguages();
+        $formatedLanguages = [];
+        foreach ($languages as $key => $language) {
+            $formatedLanguages[] = ['id_option' => $language['id_lang'], 'name' => $language['name']];
+        }
+
+        return $formatedLanguages;
+    }
+
+    /**
+     * @return array
+     * @throws PrestaShopDatabaseException
+     */
+    public static function getAllCurrencies() {
+
+
+        $currencies = CurrencyCore::getCurrencies();
+        $formatedCurrenies = [];
+        foreach ($currencies as $key => $currency) {
+            $formatedCurrenies[] = ['id_option' => $currency['id_currency'], 'name' => $currency['iso_code']];
+        }
+
+        return $formatedCurrenies;
+    }
+
+    /**
+     * @param $price
+     * @param $currencyId
+     */
+    public static function convertCurrency($price) {
+        GLOBAL $currency;
+
+        $convertedPrice = $price;
+        $defaultCurrency = RTGConfigHelper::getParamValue('defaultCurrency');
+
+        if ($currency->id != $defaultCurrency) {
+            $defaultCurrency = CurrencyCore::getCurrencyInstance($defaultCurrency);
+            $convertedPrice = Tools::convertPriceFull($price, $currency, $defaultCurrency);
+        }
+
+        return round($convertedPrice, 2);
+
     }
 }

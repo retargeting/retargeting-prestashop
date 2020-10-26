@@ -35,12 +35,11 @@ class RTGMediaHelper implements RTGMediaHelperInterface
     {
         $scripts = [
 //            RTGContextHelper::getJSBuilder()->getTrackingSrc(),
-            RTG_TRACKER_DIR . '/views/v1.6/js/rtg_tracker.js'
+            RTG_TRACKER_DIR . '/views/js/v1.6/rtg_tracker.js'
         ];
 
-        foreach ($scripts AS $script)
-        {
-            RTGContextHelper::getController()->addJS( $script );
+        foreach ($scripts as $script) {
+            RTGContextHelper::getController()->addJS($script);
         }
     }
 }

@@ -38,12 +38,12 @@ class RTGConfigHelper
     /**
      * Module key
      */
-    const MODULE_KEY = '07f632866f76537ce3f8f01eedad4f00';
+    const MODULE_KEY = '77bc1af5937025631c4c8009a56191be';
 
     /**
      * Minimum version of Prestashop
      */
-    const MINIMUM_VERSION = '1.6.1.10';
+    const MINIMUM_VERSION = '1.6.1.04';
 
     /**
      * Maximum version of Prestashop
@@ -53,40 +53,52 @@ class RTGConfigHelper
     /**
      * Enable/disable debugging
      */
-    const ENABLE_DEBUG = false;
+    const ENABLE_DEBUG = _PS_MODE_DEV_;
 
     /**
      * @var array
      */
     private static $params = [
         'trackingKey'   => [
-            'id'    => 'rtg_tracking_key',
-            'json'  => false
+            'id'   => 'rtg_tracking_key',
+            'json' => false
         ],
         'restKey'       => [
-            'id'    => 'rtg_rest_key',
-            'json'  => false,
+            'id'   => 'rtg_rest_key',
+            'json' => false,
         ],
         'cartBtnId'     => [
-            'id'    => 'rtg_cart_btn_id',
-            'json'  => false,
+            'id'   => 'rtg_cart_btn_id',
+            'json' => false,
         ],
         'priceLabelId'  => [
-            'id'    => 'rtg_price_label_id',
-            'json'  => false,
+            'id'   => 'rtg_price_label_id',
+            'json' => false,
+        ],
+        'cartUrl'       => [
+            'id'   => 'rtg_cart_url',
+            'json' => false
         ],
         'helpPages'     => [
-            'id'    => 'rtg_help_pages',
-            'json'  => true
+            'id'   => 'rtg_help_pages',
+            'json' => true
         ],
         'productsFeed'  => [
-            'id'    => 'rtg_products_feed',
-            'json'  => false
+            'id'   => 'rtg_products_feed',
+            'json' => false
         ],
         'customersFeed' => [
-            'id'    => 'rtg_customers_feed',
-            'json'  => false
-        ]
+            'id'   => 'rtg_customers_feed',
+            'json' => false
+        ],
+        'defaultLanguage' => [
+            'id' => 'rtg_default_language',
+            'json' => false
+        ],
+        'defaultCurrency' => [
+            'id' => 'rtg_default_currency',
+            'json' => false
+        ],
     ];
 
     /**
@@ -94,7 +106,8 @@ class RTGConfigHelper
      */
     private static $hooks = [
         'displayHeader',
-        'displayFooter'
+        'displayFooter',
+        'actionProductUpdate'
     ];
 
     /**
@@ -104,7 +117,7 @@ class RTGConfigHelper
     {
         $response = true;
 
-        foreach (self::$params AS $param)
+        foreach (self::$params as $param)
         {
             if (!Configuration::updateValue($param['id'], ''))
             {
@@ -124,7 +137,7 @@ class RTGConfigHelper
     {
         $response = true;
 
-        foreach (self::$params AS $param)
+        foreach (self::$params as $param)
         {
             if (!Configuration::deleteByName($param['id']))
             {
@@ -162,8 +175,7 @@ class RTGConfigHelper
      */
     public static function getParamValue($paramKey, $mapById = false, $forInputs = false)
     {
-        $getParamVal = function ($paramKey)
-        {
+        $getParamVal = function ($paramKey) {
             $paramVal = Configuration::get(self::$params[$paramKey]['id']);
 
             if (self::$params[$paramKey]['json'])
@@ -183,7 +195,7 @@ class RTGConfigHelper
         {
             $paramValues = [];
 
-            foreach ($paramKey AS $pk)
+            foreach ($paramKey as $pk)
             {
                 $pKey = ($mapById && !empty(self::$params[$pk]['id'])) ? self::$params[$pk]['id'] : $pk;
 
@@ -217,7 +229,7 @@ class RTGConfigHelper
             ];
         }
 
-        foreach ($paramKey AS $key => $val)
+        foreach ($paramKey as $key => $val)
         {
             if (isset(self::$params[$key]))
             {
@@ -225,12 +237,11 @@ class RTGConfigHelper
                 {
                     if (!is_array($val))
                     {
-                        $val = [ $val ];
+                        $val = [$val];
                     }
 
                     $val = json_encode($val);
                 }
-
                 Configuration::updateValue(self::$params[$key]['id'], $val);
             }
         }
@@ -245,7 +256,7 @@ class RTGConfigHelper
     {
         $params = [];
 
-        foreach (self::$params AS $paramKey => $param)
+        foreach (self::$params as $paramKey => $param)
         {
             $params[$paramKey] = Tools::getValue($param['id']);
         }

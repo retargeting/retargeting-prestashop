@@ -46,13 +46,10 @@ class RTGManufacturerModel extends \RetargetingSDK\Brand
     {
         $manufacturer = new Manufacturer($manufacturerId, RTGContextHelper::getLanguageId());
 
-        if(Validate::isLoadedObject($manufacturer))
-        {
+        if (Validate::isLoadedObject($manufacturer)) {
             $this->setId($manufacturer->id);
             $this->setName($manufacturer->name);
-        }
-        else
-        {
+        } else {
             throw new \RetargetingSDK\Exceptions\RTGException('Fail to load manufacturer with id: ' . $manufacturerId);
         }
     }

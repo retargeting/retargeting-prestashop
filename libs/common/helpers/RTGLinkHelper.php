@@ -60,7 +60,7 @@ class RTGLinkHelper
             null,
             null,
             null,
-            RTGContextHelper::getLanguageId(),
+            RTGConfigHelper::getParamValue('defaultLanguage'),
             null,
             $productAttributeId,
             false,
@@ -85,6 +85,47 @@ class RTGLinkHelper
      */
     public static function getCartLink()
     {
-        return Context::getContext()->link->getPageLink('cart', null, RTGContextHelper::getLanguageId(), [ 'action' => 'show' ], false, null, true);
+        return Context::getContext()->link->getPageLink(
+            'cart',
+            null,
+            RTGContextHelper::getLanguageId(),
+            [ 'action' => 'show' ],
+            false,
+            null,
+            true
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCurrentLink()
+    {
+        $currentLink  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $currentLink .= "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+        return $currentLink;
+    }
+
+    /**
+     * @param $link
+     * @return string
+     */
+    public static function getPathAndQuery($link)
+    {
+        $link = parse_url($link);
+
+        if (!empty($link['path'])) {
+            $link = $link['path'] . (!empty($link['query']) ? '?' . $link['query'] : '');
+        }
+
+        $link = trim($link, '/');
+        $link = explode('/', $link);
+
+        if (count($link) > 0 && in_array($link[0], RTGContextHelper::getLanguages('iso_code'))) {
+            unset($link[0]);
+        }
+
+        return implode('/', $link);
     }
 }

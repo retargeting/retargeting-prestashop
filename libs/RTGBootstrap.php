@@ -38,8 +38,7 @@ class RTGBootstrap
      */
     public static function run()
     {
-        if(version_compare(_PS_VERSION_, '1.7.0.0', '>='))
-        {
+        if (version_compare(_PS_VERSION_, '1.7.0.0', '>=')) {
             self::$version = 'v1.7';
         }
 
@@ -62,6 +61,7 @@ class RTGBootstrap
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGConfigHelper.php';
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGContextHelper.php';
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGLinkHelper.php';
+        require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGRandomStringGenerator.php';
 
         // Models
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGCategoryModel.php';

@@ -35,20 +35,18 @@ class RTGCustomerModel extends \RetargetingSDK\Email
      */
     public function __construct($customerId)
     {
-        $this->_setCustomerData($customerId);
+        $this->setCustomerData($customerId);
     }
 
     /**
      * @param $customerId
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
-    private function _setCustomerData($customerId)
+    private function setCustomerData($customerId)
     {
         $customer = new Customer($customerId);
 
-        if (Validate::isLoadedObject($customer))
-        {
-
+        if (Validate::isLoadedObject($customer)) {
             $this->setName($customer->firstname . ' ' . $customer->lastname);
             $this->setEmail($customer->email);
             $this->setBirthday(date('d-m-Y', strtotime($customer->birthday)));
@@ -57,9 +55,7 @@ class RTGCustomerModel extends \RetargetingSDK\Email
             // TO DO
             $this->setCity(null);
             $this->setPhone(null);
-        }
-        else
-        {
+        } else {
             throw new \RetargetingSDK\Exceptions\RTGException('Fail to load customer with id: ' . $customerId);
         }
     }

@@ -35,43 +35,40 @@ class RTGCategoryModel extends \RetargetingSDK\Category
      */
     public function __construct($categoryId)
     {
-        $this->_setCategoryData($categoryId);
+        $this->setCategoryData($categoryId);
     }
 
     /**
      * @param $categoryId
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
-    private function _setCategoryData($categoryId)
+    private function setCategoryData($categoryId)
     {
-        $category = new Category($categoryId, RTGContextHelper::getLanguageId());
+        $langId = RTGConfigHelper::getParamValue('defaultLanguage');
+        $category = new Category($categoryId, $langId);
 
-        if(Validate::isLoadedObject($category))
-        {
+        if (Validate::isLoadedObject($category)) {
             $this->setId($category->id);
             $this->setName($category->name);
             $this->setUrl(RTGLinkHelper::getCategoryLink($categoryId));
 
-            if(!empty($category->id_parent))
-            {
+            if (!empty($category->id_parent)) {
                 $breadcrumbs = [];
 
-                $parentsCategories = $category->getParentsCategories(RTGContextHelper::getLanguageId());
+                $parentsCategories = $category->getParentsCategories($langId);
 
-                foreach ($parentsCategories AS $pCategoryIdx => $pCategory)
-                {
-                    if(
-                        isset($pCategory['id_category'])
+                foreach ($parentsCategories as $pCategoryIdx => $pCategory) {
+                    if (isset($pCategory['id_category'])
                         && is_string($pCategory['name'])
                         && (int)$pCategory['active'] === 1
                         && $pCategory['id_category'] != $categoryId
                         && $pCategory['is_root_category'] < 1
-                    )
-                    {
+                    ) {
                         $parentId = $pCategory['id_parent'];
 
-                        if(!empty($parentsCategories[$pCategoryIdx + 1]) && $parentsCategories[$pCategoryIdx + 1]['is_root_category'] > 0)
-                        {
+                        if (!empty($parentsCategories[$pCategoryIdx + 1])
+                            && $parentsCategories[$pCategoryIdx + 1]['is_root_category'] > 0
+                        ) {
                             $parentId = false;
                         }
 
@@ -83,15 +80,12 @@ class RTGCategoryModel extends \RetargetingSDK\Category
                     }
                 }
 
-                if(!empty($breadcrumbs))
-                {
+                if (!empty($breadcrumbs)) {
                     $this->setParent($category->id_parent);
                     $this->setBreadcrumb($breadcrumbs);
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new \RetargetingSDK\Exceptions\RTGException('Fail to load category with id: ' . $categoryId);
         }
     }

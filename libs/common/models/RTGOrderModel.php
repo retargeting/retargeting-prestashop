@@ -50,20 +50,20 @@ class RTGOrderModel extends \RetargetingSDK\Order
     {
         $order = new Order($orderId);
 
-        if(Validate::isLoadedObject($order))
-        {
+        if (Validate::isLoadedObject($order)) {
             $this->setOrderNo($order->id);
 
             $orderCustomer = $order->getCustomer();
 
+            $order->total_paid = RTGContextHelper::convertCurrency($order->total_paid);
+
             $this->setFirstName($orderCustomer->firstname);
             $this->setLastName($orderCustomer->lastname);
             $this->setEmail($orderCustomer->email);
-            $this->setShipping($order->total_shipping);
+            $this->setShipping(round($order->total_shipping, 2));
             $this->setTotal($order->total_paid);
 
-            if(!empty($orderCustomer->birthday) || $orderCustomer->birthday == '0000-00-00')
-            {
+            if (!empty($orderCustomer->birthday) || $orderCustomer->birthday == '0000-00-00') {
                 $this->setBirthday(date('d-m-Y', strtotime($orderCustomer->birthday)));
             }
 
@@ -72,12 +72,10 @@ class RTGOrderModel extends \RetargetingSDK\Order
 
             $discounts = $order->getCartRules();
 
-            if (!empty($discounts))
-            {
+            if (!empty($discounts)) {
                 $discountCode = array();
 
-                foreach ($discounts as $discount)
-                {
+                foreach ($discounts as $discount) {
                     $cartRule = new CartRule((int)$discount['id_cart_rule']);
 
                     $discountCode[] = $cartRule->code;
@@ -89,27 +87,28 @@ class RTGOrderModel extends \RetargetingSDK\Order
             // Address
             $orderCustomerAddress = new Address($order->id_address_delivery);
 
-            if(Validate::isLoadedObject($orderCustomerAddress))
-            {
-                $this->setPhone(!empty($orderCustomerAddress->phone_mobile) ? $orderCustomerAddress->phone_mobile : $orderCustomerAddress->phone);
+            if (Validate::isLoadedObject($orderCustomerAddress)) {
+                $this->setPhone(!empty($orderCustomerAddress->phone_mobile)
+                    ? $orderCustomerAddress->phone_mobile
+                    : $orderCustomerAddress->phone);
                 $this->setState($orderCustomerAddress->country);
                 $this->setCity($orderCustomerAddress->city);
                 $this->setAddress($orderCustomerAddress->address1);
             }
 
-            foreach ($order->getProducts() AS $product)
-            {
+            foreach ($order->getProducts() as $product) {
+
+                $product['total_price_tax_incl'] = RTGContextHelper::convertCurrency($product['total_price_tax_incl']);
+
                 $this->setProduct(
                     $product['product_id'],
                     $product['product_quantity'],
                     $product['total_price_tax_incl'],
-//                    $product['product_attribute_id']
+                    // $product['product_attribute_id']
                     ''
                 );
             }
-        }
-        else
-        {
+        } else {
             throw new \RetargetingSDK\Exceptions\RTGException('Fail to load order with id: ' . $orderId);
         }
     }

@@ -48,7 +48,7 @@
         {
             if(typeof _ra === "undefined")
             {
-                var _ra = {};
+                _ra = {};
             }
 
             if(dataOb.hasOwnProperty('add'))

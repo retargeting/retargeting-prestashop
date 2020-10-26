@@ -47,7 +47,7 @@ class RTGMediaHelper implements RTGMediaHelperInterface
             ],*/
             [
                 'ra_tracker_2',
-                ( 'modules/' . RTGConfigHelper::MODULE_NAME . '/views/v1.7/js/rtg_tracker.js' ),
+                ('modules/' . RTGConfigHelper::MODULE_NAME . '/views/js/v1.7/rtg_tracker.js'),
                 [
                     'position'      => 'bottom',
                     'priority'      => 1001,
@@ -58,9 +58,8 @@ class RTGMediaHelper implements RTGMediaHelperInterface
             ]
         ];
 
-        foreach ($scripts AS $script)
-        {
-            call_user_func_array( [ RTGContextHelper::getController(), 'registerJavascript' ], $script );
+        foreach ($scripts as $script) {
+            call_user_func_array([ RTGContextHelper::getController(), 'registerJavascript' ], $script);
         }
     }
 }
