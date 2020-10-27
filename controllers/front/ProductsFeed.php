@@ -113,10 +113,10 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'margin' => null
                 ];
 
-                $product = new Product($_product['id_product'], false, $this->id_lang);
-                $manufacturer = new Manufacturer($product->id_manufacturer, $this->id_lang);
-                $category = new Category($product->id_category_default, $this->id_lang);
-                $categories = $category->getParentsCategories($this->id_lang);
+                $product = new Product($_product['id_product'], false, RTGConfigHelper::getParamValue('defaultLanguage'));
+                $manufacturer = new Manufacturer($product->id_manufacturer, RTGConfigHelper::getParamValue('defaultLanguage'));
+                $category = new Category($product->id_category_default, RTGConfigHelper::getParamValue('defaultLanguage'));
+                $categories = $category->getParentsCategories(RTGConfigHelper::getParamValue('defaultLanguage'));
                 $ctree = [];
 
                 foreach($categories as $c) {
@@ -132,8 +132,8 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $extra_data['media gallery'] =  $images['extra'];
 
 
-                $pprice = number_format($product->getPriceWithoutReduct(), 2);
-                $psprice = number_format($product->getPrice(), 2);
+                $pprice = number_format(RTGContextHelper::convertCurrency($product->getPriceWithoutReduct()), 2);
+                $psprice = number_format(RTGContextHelper::convertCurrency($product->getPrice()), 2);
                 if(
                     empty($category->name) ||
                     empty($product->name) ||
