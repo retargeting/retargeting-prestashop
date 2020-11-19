@@ -151,8 +151,8 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'product url' => RTGLinkHelper::getProductLink($product),
                     'image url' => $images['main'],
                     'stock' => Product::getQuantity($_product['id_product']),
-                    'price' => $pprice,
-                    'sale price' => $psprice,
+                    'price' => str_replace(',', '.', $pprice),
+                    'sale price' => str_replace(',', '.', $psprice),
                     'brand' => $manufacturer->name,
                     'category' => $category->name,
                     'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES)

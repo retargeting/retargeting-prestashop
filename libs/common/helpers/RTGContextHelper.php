@@ -169,7 +169,7 @@ class RTGContextHelper
             $convertedPrice = Tools::convertPriceFull($price, $currency, $defaultCurrency);
         }
 
-        return round($convertedPrice, 2);
+        return $convertedPrice;
 
     }
 }
