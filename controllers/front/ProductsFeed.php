@@ -132,8 +132,8 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $extra_data['media gallery'] =  $images['extra'];
 
 
-                $pprice = number_format(RTGContextHelper::convertCurrency($product->getPriceWithoutReduct()), 2);
-                $psprice = number_format(RTGContextHelper::convertCurrency($product->getPrice()), 2);
+                $pprice = number_format(RTGContextHelper::convertCurrency($product->getPriceWithoutReduct()), 2, '.', '');
+                $psprice = number_format(RTGContextHelper::convertCurrency($product->getPrice()), 2, '.', '');
                 if(
                     empty($category->name) ||
                     empty($product->name) ||
