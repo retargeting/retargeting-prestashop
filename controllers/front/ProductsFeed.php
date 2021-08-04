@@ -127,7 +127,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 }
 
                 $images = $this->getProductImages($product);
-
+                
                 $extra_data['categories'] =  implode(' | ', $ctree);
                 $extra_data['media gallery'] =  $images['extra'];
 
@@ -144,17 +144,17 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 ) {
                     continue;
                 }
-
+               
                 fputcsv($outstream, array(
                     'product id' => $product->id,
-                    'product name' => $product->name,
+                    'product name' => is_array($product->name) ? $product->name[1] : $product->name,
                     'product url' => RTGLinkHelper::getProductLink($product),
                     'image url' => $images['main'],
                     'stock' => Product::getQuantity($_product['id_product']),
                     'price' => str_replace(',', '.', $pprice),
                     'sale price' => str_replace(',', '.', $psprice),
                     'brand' => $manufacturer->name,
-                    'category' => $category->name,
+                    'category' => is_array($category->name) ? $category->name[1] : $category->name,
                     'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES)
                 ), ',', '"');
             }
@@ -225,7 +225,6 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         if ((int)$imageId > 0) {
             $url = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imageId);
-
             $result['main'] = $url;
         }
 

@@ -77,7 +77,7 @@ class RTGLinkHelper
      */
     public static function getImageLink($name, $ids, $type = null)
     {
-        return Context::getContext()->link->getImageLink($name, $ids, $type);
+        return Context::getContext()->link->getImageLink(is_array($name) ? $name[1] : $name, $ids, $type);
     }
 
     /**
