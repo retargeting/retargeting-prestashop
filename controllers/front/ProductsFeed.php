@@ -128,31 +128,34 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
                 $images = $this->getProductImages($product);
                 
-                $extra_data['categories'] =  implode(' | ', $ctree);
-                $extra_data['media gallery'] =  $images['extra'];
+                //$extra_data['categories'] =  implode(' | ', $ctree);
+                /*$extra_data['media gallery'] =  $images['extra'];*/
 
 
-                $pprice = number_format(RTGContextHelper::convertCurrency($product->getPriceWithoutReduct()), 2, '.', '');
-                $psprice = number_format(RTGContextHelper::convertCurrency($product->getPrice()), 2, '.', '');
+                $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
+                $link = RTGLinkHelper::getProductLink($product);
                 if(
-                    empty($category->name) ||
                     empty($product->name) ||
-                    empty(RTGLinkHelper::getProductLink($product)) ||
+                    empty($link) ||
                     empty($images['main']) ||
-                    $pprice == 0 ||
-                    $psprice == 0
+                    $pprice == 0
                 ) {
                     continue;
                 }
+
+                $psprice = number_format($product->getPrice(), 2, '.', '');
+                
+                $category->name = empty($category->name) ? 'Root' : $category->name;
+                $psprice = $psprice === 0 ? $pprice : $psprice;
                
                 fputcsv($outstream, array(
                     'product id' => $product->id,
                     'product name' => is_array($product->name) ? $product->name[1] : $product->name,
-                    'product url' => RTGLinkHelper::getProductLink($product),
+                    'product url' => $link,
                     'image url' => $images['main'],
                     'stock' => Product::getQuantity($_product['id_product']),
-                    'price' => str_replace(',', '.', $pprice),
-                    'sale price' => str_replace(',', '.', $psprice),
+                    'price' => $pprice,
+                    'sale price' => $psprice,
                     'brand' => $manufacturer->name,
                     'category' => is_array($category->name) ? $category->name[1] : $category->name,
                     'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES)
@@ -227,12 +230,13 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
             $url = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imageId);
             $result['main'] = $url;
         }
-
+/*
         if (!empty($imagesIds)) {
             foreach ($imagesIds as $imgIdx => $imgId) {
                 $result['extra'][] = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imgId);
             }
         }
+        */
 
         return $result;
     }
