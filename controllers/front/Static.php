@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2019 Retargeting BIZ SRL
+ * 2014-2021 Retargeting BIZ SRL
  *
  * NOTICE OF LICENSE
  *
@@ -19,14 +19,15 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2019 Retargeting SRL
+ * @copyright 2014-2021 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class Rtg_trackerProductsFeedModuleFrontController
+ * Class Rtg_trackerStaticModuleFrontController
  */
-class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
+
+class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
 {
     private $order_by = 'id_product';
     private $order_way = 'ASC';
@@ -34,6 +35,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
     private $only_active = true;
     protected $context = null;
     private $limit = 250;
+    private $filename = 'retargeting.csv';
 
     private $id_lang;
 
@@ -52,25 +54,45 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         if ($this->isFeedEnabled()) {
-            $this->getProductBatches();
+
+            if( !isset($_GET['cron']) ) {
+                $file = [ _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename, 'r' ];
+                
+                $outstream = fopen($file[0], $file[1]);
+                if(FALSE === $upstream) {
+                    exit("fail");
+                }
+                echo fread($outstream,filesize($file[0]));
+                
+                fclose($outstream);
+
+                header('Content-Disposition: attachment; filename='.$this->filename);
+                header('Content-type: text/csv');
+
+            } else {
+                $this->getProductBatches();
+            }
+
         } else {
             echo 'This feed is disabled!';
         }
-
         exit(0);
     }
 
     private function getProductBatches()
     {
 
-        header("Content-Disposition: attachment; filename=retargeting.csv");
-        header("Content-type: text/csv");
-
-        $id_lang = $this->id_lang;
-
         $start = 0;
 
-        $outstream = fopen('php://output', 'w');
+        $defLanguage = RTGConfigHelper::getParamValue('defaultLanguage');
+
+        $file = [
+            _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename.'.tmp',
+            'w+',
+            _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename
+        ];
+        
+        $outstream = fopen($file[0], $file[1]);
 
         $loop = true;
 
@@ -103,8 +125,6 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $loop = false;
             }
 
-
-
             foreach ($batch as $_product) {
                 $extra_data = [
                     'categories' => '',
@@ -113,10 +133,10 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'margin' => null
                 ];
 
-                $product = new Product($_product['id_product'], false, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $manufacturer = new Manufacturer($product->id_manufacturer, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $category = new Category($product->id_category_default, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $categories = $category->getParentsCategories(RTGConfigHelper::getParamValue('defaultLanguage'));
+                $product = new Product($_product['id_product'], false, $defLanguage);
+                $manufacturer = new Manufacturer($product->id_manufacturer, $defLanguage);
+                $category = new Category($product->id_category_default, $defLanguage);
+                $categories = $category->getParentsCategories($defLanguage);
                 $ctree = [];
 
                 foreach($categories as $c) {
@@ -164,6 +184,12 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
             $start += $this->limit;
         } while ($loop);
+
+        rename( $file[0], $file[2] );
+        
+        header('Content-Type: text/json');
+
+        echo json_encode(['status'=>'succes']);
     }
 
     /**
@@ -239,6 +265,4 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
         
         return $result;
     }
-
-
 }

@@ -591,12 +591,21 @@ class Rtg_tracker extends \Module
                 [
                     'type'      => 'switch',
                     'label'     => $this->l('Products Feed'),
-                    'desc'      => implode('', [
+                    'desc'      => implode(' ', [
                         '<b>',
                         $this->l('URL'),
                         '</b> ',
-                        $this->getLinkHTML(RTGLinkHelper::getModuleLink('ProductsFeed'))
-                    ]),
+                        $this->getLinkHTML(RTGLinkHelper::getModuleLink('ProductsFeed')),
+                        '<br /><b>',
+                        $this->l('URL Cron Feed'),
+                        '</b> ',
+                        $this->getLinkHTML(RTGLinkHelper::getModuleLink('Static')),
+                        '<br /><br /><b>',
+                        $this->l('Add this to your CronJobs'),
+                        '</b><br />',
+                        '<code>* 3 * * * /usr/bin/php '. _PS_MODULE_DIR_ .'modules/rtg_tracker/cron.php >/dev/null 2>&1</code>'
+                    ]
+                ),
                     'name'      => RTGConfigHelper::getParamId('productsFeed'),
                     'is_bool'   => true,
                     'required'  => false,
