@@ -129,7 +129,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     if($c['is_root_category'] == "1") {
                         continue;
                     }
-                    $ctree[$c['id']] = $c['name'];
+                    $ctree[$c['id_category']] = $c['name'];
                 }
 
                 $images = $this->getProductImages($product);
