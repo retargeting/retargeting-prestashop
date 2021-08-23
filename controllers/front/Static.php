@@ -137,18 +137,26 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
                 $manufacturer = new Manufacturer($product->id_manufacturer, $defLanguage);
                 $category = new Category($product->id_category_default, $defLanguage);
                 $categories = $category->getParentsCategories($defLanguage);
-                $ctree = [];
+
+                $category->id = is_array($category->id) ? $category->id[0] : $category->id;
+                $category->name = is_array($category->name) ? $category->name[0] : $category->name;
+
+                $ctree = [
+                    $category->id => $category->name
+                ];
 
                 foreach($categories as $c) {
                     if($c['is_root_category'] == "1") {
                         continue;
                     }
-                    $ctree[] = $c['name'];
+                    $ctree[$c['id']] = $c['name'];
                 }
 
                 $images = $this->getProductImages($product);
                 
-                $extra_data['categories'] =  implode(' | ', $ctree);
+                /* $extra_data['categories'] =  implode(' | ', $ctree); */
+                $extra_data['categories'] = $ctree;
+
                 $extra_data['media gallery'] =  $images['extra'];
 
 
@@ -165,7 +173,6 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
 
                 $psprice = number_format($product->getPrice(), 2, '.', '');
                 
-                $category->name = empty($category->name) ? 'Root' : $category->name;
                 $psprice = $psprice === 0 ? $pprice : $psprice;
                
                 fputcsv($outstream, array(
@@ -177,7 +184,7 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
                     'price' => $pprice,
                     'sale price' => $psprice,
                     'brand' => $manufacturer->name,
-                    'category' => is_array($category->name) ? $category->name[1] : $category->name,
+                    'category' => $category->name,
                     'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES)
                 ), ',', '"');
             }
