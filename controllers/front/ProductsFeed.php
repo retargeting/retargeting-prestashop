@@ -66,11 +66,11 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
         header("Content-Disposition: attachment; filename=retargeting.csv");
         header("Content-type: text/csv");
 
-        $id_lang = $this->id_lang;
-
         $start = 0;
 
         $outstream = fopen('php://output', 'w');
+
+        $defLanguage = RTGConfigHelper::getParamValue('defaultLanguage');
 
         $loop = true;
 
@@ -113,10 +113,10 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'margin' => null
                 ];
 
-                $product = new Product($_product['id_product'], false, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $manufacturer = new Manufacturer($product->id_manufacturer, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $category = new Category($product->id_category_default, RTGConfigHelper::getParamValue('defaultLanguage'));
-                $categories = $category->getParentsCategories(RTGConfigHelper::getParamValue('defaultLanguage'));
+                $product = new Product($_product['id_product'], false, $defLanguage);
+                $manufacturer = new Manufacturer($product->id_manufacturer, $defLanguage);
+                $category = new Category($product->id_category_default, $defLanguage);
+                $categories = $category->getParentsCategories($defLanguage);
 
                 $category->id = is_array($category->id) ? $category->id[0] : $category->id;
                 $category->name = is_array($category->name) ? $category->name[0] : $category->name;
