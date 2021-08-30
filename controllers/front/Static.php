@@ -159,7 +159,7 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
 
                 $extra_data['media gallery'] =  $images['extra'];
 
-                $pprice = number_format($product->getPriceWithoutReduct(true), 2, '.', '');
+                $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
                 $link = RTGLinkHelper::getProductLink($product);
                 if(
                     empty($product->name) ||
