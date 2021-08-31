@@ -191,6 +191,8 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
 
             $start += $this->limit;
         } while ($loop);
+        
+        fclose($outstream);
 
         rename( $file[0], $file[2] );
         

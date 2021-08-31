@@ -171,6 +171,8 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
             $start += $this->limit;
         } while ($loop);
+        
+        fclose($outstream);
     }
 
     /**
