@@ -103,8 +103,6 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $loop = false;
             }
 
-
-
             foreach ($batch as $_product) {
                 $extra_data = [
                     'categories' => '',
@@ -126,9 +124,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 ];
 
                 foreach($categories as $c) {
-                    if($c['is_root_category'] == "1") {
-                        continue;
-                    }
+                    
                     $ctree[$c['id_category']] = $c['name'];
                 }
 
@@ -140,6 +136,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $extra_data['media gallery'] =  $images['extra'];
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
+
                 $link = RTGLinkHelper::getProductLink($product);
                 if(
                     empty($product->name) ||
