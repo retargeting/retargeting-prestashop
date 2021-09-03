@@ -158,19 +158,24 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
                 $extra_data['media gallery'] =  $images['extra'];
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
+                $psprice = number_format($product->getPrice(), 2, '.', '');
+
                 $link = RTGLinkHelper::getProductLink($product);
+                
                 if(
                     empty($product->name) ||
                     empty($link) ||
                     empty($images['main']) ||
-                    $pprice == 0
+                    ( $pprice === 0 && $psprice === 0 )
                 ) {
                     continue;
                 }
 
-                $psprice = number_format($product->getPrice(), 2, '.', '');
+                $pprice = $pprice === 0 && $psprice !== 0 ?
+                    $psprice : $pprice;
                 
                 $psprice = $psprice === 0 ? $pprice : $psprice;
+
                 $pprice = $psprice >= $pprice ? $psprice : $pprice;
                
                 fputcsv($outstream, array(
