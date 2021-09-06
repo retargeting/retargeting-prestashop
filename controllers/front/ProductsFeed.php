@@ -144,7 +144,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     empty($product->name) ||
                     empty($link) ||
                     empty($images['main']) ||
-                    ( $pprice === 0 && $psprice === 0 )
+                    ( empty((float) $pprice) && empty((float) $psprice) )
                 ) {
                     continue;
                 }
