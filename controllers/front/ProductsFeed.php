@@ -118,14 +118,16 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
                 $category->id = is_array($category->id) ? $category->id[0] : $category->id;
                 $category->name = is_array($category->name) ? $category->name[0] : $category->name;
+                $category->name = empty($category->name) ? "Root" : $category->name;
 
                 $ctree = [
                     $category->id => $category->name
                 ];
 
                 foreach($categories as $c) {
-                    
-                    $ctree[$c['id_category']] = $c['name'];
+                    if( $c['name'] !== null ){
+                        $ctree[$c['id_category']] = $c['name'];
+                    }
                 }
 
                 $images = $this->getProductImages($product);
