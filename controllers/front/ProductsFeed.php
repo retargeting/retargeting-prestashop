@@ -105,7 +105,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
             foreach ($batch as $_product) {
                 $extra_data = [
-                    'categories' => '',
+                    'categories' => [],
                     'media gallery' => [],
                     'variations' => [],
                     'margin' => null
@@ -118,21 +118,20 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
                 $category->id = is_array($category->id) ? $category->id[0] : $category->id;
                 $category->name = is_array($category->name) ? $category->name[0] : $category->name;
-                $category->name = empty($category->name) ? "Root" : $category->name;
 
-                $ctree = [
-                    $category->id => $category->name
-                ];
+                $category->name = empty($category->name) ? "Root" : $category->name;
 
                 foreach($categories as $c) {
                     if( $c['name'] !== null ){
                         $ctree[$c['id_category']] = $c['name'];
                     }
                 }
+                unset($ctree[$category->id]);
+
+                $ctree[$category->id] = $category->name;
 
                 $images = $this->getProductImages($product);
                 
-                /* $extra_data['categories'] =  implode(' | ', $ctree); */
                 $extra_data['categories'] = $ctree;
 
                 $extra_data['media gallery'] =  $images['extra'];
