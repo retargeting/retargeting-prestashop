@@ -2,7 +2,7 @@
 <module>
 	<name>rtg_tracker</name>
 	<displayName><![CDATA[Retargeting Tracker]]></displayName>
-	<version><![CDATA[1.0.3]]></version>
+	<version><![CDATA[v1.0.3]]></version>
 	<description><![CDATA[Retargeting is a marketing automation tool that boosts the conversion rate and sales of your online store.]]></description>
 	<author><![CDATA[Retargeting BIZ]]></author>
 	<tab><![CDATA[analytics_stats]]></tab>
