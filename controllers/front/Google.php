@@ -27,14 +27,14 @@ class Rtg_trackerGoogleModuleFrontController extends ModuleFrontController
         if( !$checkKey ){
             
             $message = "Wrong Key RTG Key!";
-        }else if( $checkKey && Tools::getIsset(Tools::getValue('code')) && !Tools::getIsset(Tools::getValue('del')) ) {
+        }elseif( $checkKey && Tools::getIsset(Tools::getValue('code')) && !Tools::getIsset(Tools::getValue('del')) ) {
             
             $outstream = fopen(_PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html' , "w+") or die("Unable to open file!");
             fwrite($outstream, 'google-site-verification: ' . Tools::getValue('code') . '.html');
             fclose($outstream);
 
             $message = 'All Good, Please Check ' . $Link . '/' . Tools::getValue('code') . '.html';
-        }else if ( $checkKey && Tools::getIsset(Tools::getValue('del')) ) {
+        }elseif ( $checkKey && Tools::getIsset(Tools::getValue('del')) ) {
             
             unlink( _PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html' );
 
