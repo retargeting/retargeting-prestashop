@@ -142,7 +142,7 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
                 $category->name = is_array($category->name) ? $category->name[0] : $category->name;
 
                 $category->name = empty($category->name) ? "Root" : $category->name;
-
+                $ctree = [];
                 foreach($categories as $c) {
                     if( $c['name'] !== null ){
                         $ctree[$c['id_category']] = $c['name'];
