@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>rtg_tracker</name>
+    <displayName><![CDATA[Retargeting Tracker]]></displayName>
+    <version><![CDATA[1.0.3]]></version>
+    <description><![CDATA[Retargeting is a marketing automation tool that boosts the conversion rate and sales of your online store.]]></description>
+    <author><![CDATA[Retargeting BIZ]]></author>
+    <tab><![CDATA[analytics_stats]]></tab>
+	<confirmUninstall><![CDATA[Are you sure you want to uninstall Retargeting Tracker? You will lose all the data related to this module.]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+</module>

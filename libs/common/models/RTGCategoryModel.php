@@ -49,14 +49,14 @@ class RTGCategoryModel extends \RetargetingSDK\Category
 
         if (Validate::isLoadedObject($category)) {
             $this->setId($category->id);
-            $this->setName($category->name);
+            $this->setName(is_array($category->name) ? $category->name[1] : $category->name);
             $this->setUrl(RTGLinkHelper::getCategoryLink($categoryId));
 
             if (!empty($category->id_parent)) {
                 $breadcrumbs = [];
 
-                $parentsCategories = $category->getParentsCategories($langId);
-
+                $parentsCategories = $category->getParentsCategories();
+                
                 foreach ($parentsCategories as $pCategoryIdx => $pCategory) {
                     if (isset($pCategory['id_category'])
                         && is_string($pCategory['name'])
@@ -74,7 +74,7 @@ class RTGCategoryModel extends \RetargetingSDK\Category
 
                         $breadcrumbs[] = [
                             'id'     => $pCategory['id_category'],
-                            'name'   => $pCategory['name'],
+                            'name'   => is_array($pCategory['name']) ? $pCategory['name'][1] : $pCategory['name'],
                             'parent' => $parentId
                         ];
                     }

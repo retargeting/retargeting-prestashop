@@ -55,7 +55,7 @@ class RTGLinkHelper
      */
     public static function getProductLink($product, $productAttributeId = null)
     {
-        return Context::getContext()->link->getProductLink(
+        $newLink = Context::getContext()->link->getProductLink(
             $product,
             null,
             null,
@@ -67,6 +67,12 @@ class RTGLinkHelper
             false,
             true
         );
+
+        if ( !filter_var($newLink, FILTER_VALIDATE_URL) ) {
+            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+        }
+
+        return $newLink;
     }
 
     /**
@@ -77,7 +83,12 @@ class RTGLinkHelper
      */
     public static function getImageLink($name, $ids, $type = null)
     {
-        return Context::getContext()->link->getImageLink($name, $ids, $type);
+        $newLink = Context::getContext()->link->getImageLink(is_array($name) ? $name[1] : $name, $ids, $type);
+        
+        if ( !filter_var($newLink, FILTER_VALIDATE_URL) ) {
+            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+        }
+        return $newLink;
     }
 
     /**

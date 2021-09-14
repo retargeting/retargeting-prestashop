@@ -86,6 +86,7 @@ class Rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontControlle
      */
     public function initContent()
     {
+        
         if ($this->isFeedEnabled()) {
             if (!empty($this->_token)) {
                 $raCustomersFeed = new \RetargetingSDK\CustomersFeed($this->_token);
