@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2019 Retargeting BIZ SRL
+ * 2014-2021 Retargeting BIZ SRL
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2019 Retargeting SRL
+ * @copyright 2014-2021 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -43,7 +43,7 @@ class Rtg_tracker extends \Module
     {
         $this->name                     = 'rtg_tracker';
         $this->tab                      = 'analytics_stats';
-        $this->version                  = '1.0.2';
+        $this->version                  = '1.0.3';
         $this->author                   = 'Retargeting BIZ';
         $this->need_instance            = 0;
         $this->bootstrap                = true;
@@ -196,7 +196,7 @@ class Rtg_tracker extends \Module
 
             $controller = Tools::getValue('controller');
 
-            if (isset($controllersMap[$controller])) {
+            if (Tools::getIsset($controllersMap[$controller])) {
                 $fnParams = [];
 
                 if (!empty($controllersMap[$controller])) {
