@@ -3,7 +3,8 @@
  * 2014-2021 Retargeting BIZ SRL
  * 
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2021 Retargeting SRL
+ * @copyright 2014-2021 Retargeting SRL 
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 $_GET['fc'] = 'module';
