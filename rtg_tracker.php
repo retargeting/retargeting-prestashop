@@ -41,14 +41,14 @@ class Rtg_tracker extends \Module
      */
     public function __construct()
     {
-        $this->name                     = 'rtg_tracker';
-        $this->tab                      = 'analytics_stats';
-        $this->version                  = '1.0.3';
-        $this->author                   = 'Retargeting BIZ';
-        $this->need_instance            = 0;
-        $this->bootstrap                = true;
-        $this->module_key               = '77bc1af5937025631c4c8009a56191be';
-        $this->ps_versions_compliancy   = [
+        $this->name = 'rtg_tracker';
+        $this->tab = 'analytics_stats';
+        $this->version = "1.0.3";
+        $this->author = 'Retargeting BIZ';
+        $this->need_instance = 0;
+        $this->bootstrap = true;
+        $this->module_key = '77bc1af5937025631c4c8009a56191be';
+        $this->ps_versions_compliancy = [
             'min' => '1.6.1.04',
             'max' => _PS_VERSION_
         ];
