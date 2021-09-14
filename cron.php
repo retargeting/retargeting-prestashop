@@ -19,3 +19,4 @@ if (!Tools::getIsset($_GET['static'])) {
 require_once dirname(__FILE__) . '/../../index.php';
 
 exit();
+?>
