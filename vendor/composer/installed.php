@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '74d56df76ce16e59ea612224cc62a8271f2b7f2f',
+    'reference' => '6e83880242375f6680b062e9a730087a7d700a83',
     'name' => 'retargeting/ra_tracker',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '74d56df76ce16e59ea612224cc62a8271f2b7f2f',
+      'reference' => '6e83880242375f6680b062e9a730087a7d700a83',
     ),
     'retargeting/retargeting-sdk' => 
     array (
