@@ -140,30 +140,30 @@ class Rtg_tracker extends \Module
         return null;
     }
 
-    public function hookActionProductUpdate()
-    {
-        $productId = Tools::getValue('id_product');
+    // public function hookActionProductUpdate()
+    // {
+    //     $productId = Tools::getValue('id_product');
 
-        if (!empty($productId) && RTGContextHelper::getJSBuilder()->hasRestApiKey()) {
-            $RTGProduct = new RTGProductModel($productId);
+    //     if (!empty($productId) && RTGContextHelper::getJSBuilder()->hasRestApiKey()) {
+    //         $RTGProduct = new RTGProductModel($productId);
 
-            $stockManagement = new \RetargetingSDK\Api\StockManagement();
-            $stockManagement->setProductId($RTGProduct->getId());
-            $stockManagement->setName($RTGProduct->getName());
-            $stockManagement->setImage($RTGProduct->getImg());
-            $stockManagement->setPrice($RTGProduct->getPrice());
-            $stockManagement->setPromo($RTGProduct->getPromo());
-            $stockManagement->setStock($RTGProduct->getInventory()['stock']);
-            $stockManagement->setUrl($RTGProduct->getUrl());
+    //         $stockManagement = new \RetargetingSDK\Api\StockManagement();
+    //         $stockManagement->setProductId($RTGProduct->getId());
+    //         $stockManagement->setName($RTGProduct->getName());
+    //         $stockManagement->setImage($RTGProduct->getImg());
+    //         $stockManagement->setPrice($RTGProduct->getPrice());
+    //         $stockManagement->setPromo($RTGProduct->getPromo());
+    //         $stockManagement->setStock($RTGProduct->getInventory()['stock']);
+    //         $stockManagement->setUrl($RTGProduct->getUrl());
 
-            $stockManagement->updateStock(
-                RTGContextHelper::getJSBuilder()->getRestApiKey(),
-                $stockManagement->prepareStockInfo()
-            );
-        } else {
-            throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
-        }
-    }
+    //         $stockManagement->updateStock(
+    //             RTGContextHelper::getJSBuilder()->getRestApiKey(),
+    //             $stockManagement->prepareStockInfo()
+    //         );
+    //     } else {
+    //         throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
+    //     }
+    // }
 
     /**
      * @return string|null
