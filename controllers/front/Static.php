@@ -55,11 +55,11 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
     {
         if ($this->isFeedEnabled()) {
 
-            if( !isset($_GET['cron']) ) {
+            if( !Tools::getIsset($_GET['cron']) ) {
                 $file = [ _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename, 'r' ];
                 
                 $outstream = fopen($file[0], $file[1]);
-                if(FALSE === $upstream) {
+                if(FALSE === $outstream) {
                     exit("fail");
                 }
                 echo fread($outstream,filesize($file[0]));
@@ -271,7 +271,7 @@ class Rtg_trackerStaticModuleFrontController extends ModuleFrontController
         }
 
         if (!empty($imagesIds)) {
-            foreach ($imagesIds as $imgIdx => $imgId) {
+            foreach ($imagesIds as $imgId) {
                 $result['extra'][] = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imgId);
             }
         }

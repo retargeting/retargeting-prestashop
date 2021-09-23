@@ -3,6 +3,8 @@
  * 2014-2021 Retargeting BIZ SRL
  * 
  * @author    Retargeting SRL <info@retargeting.biz>
+ * @copyright 2014-2021 Retargeting SRL
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
@@ -18,25 +20,25 @@ class Rtg_trackerGoogleModuleFrontController extends ModuleFrontController
     {
         $key = Configuration::get(self::$params[0]);
 
-        $Link  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $Link  = (Tools::getIsset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
         $Link .= "://{$_SERVER['HTTP_HOST']}";
-        $checkKey = ( isset($_GET['key']) && !empty($key) && $_GET['key'] === $key );
+        $checkKey = ( Tools::getIsset(Tools::getValue('key')) && !empty($key) && Tools::getValue('key') === $key );
 
         if( !$checkKey ){
             
             $message = "Wrong Key RTG Key!";
-        }else if( $checkKey && isset($_GET['code']) && !isset($_GET['del']) ) {
+        }elseif( $checkKey && Tools::getIsset(Tools::getValue('code')) && !Tools::getIsset(Tools::getValue('del')) ) {
             
-            $outstream = fopen(_PS_ROOT_DIR_ . '/' . $_GET['code'] . '.html' , "w+") or die("Unable to open file!");
-            fwrite($outstream, 'google-site-verification: ' . $_GET['code'] . '.html');
+            $outstream = fopen(_PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html' , "w+") or die("Unable to open file!");
+            fwrite($outstream, 'google-site-verification: ' . Tools::getValue('code') . '.html');
             fclose($outstream);
 
-            $message = 'All Good, Please Check ' . $Link . '/' . $_GET['code'] . '.html';
-        }else if ( $checkKey && isset($_GET['del']) ) {
+            $message = 'All Good, Please Check ' . $Link . '/' . Tools::getValue('code') . '.html';
+        }elseif ( $checkKey && Tools::getIsset(Tools::getValue('del')) ) {
             
-            unlink( _PS_ROOT_DIR_ . '/' . $_GET['code'] . '.html' );
+            unlink( _PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html' );
 
-            $message = 'File Deleted, Please Check ' . $Link . '/' . $_GET['code'] . '.html';
+            $message = 'File Deleted, Please Check ' . $Link . '/' . Tools::getValue('code') . '.html';
         }
 
         echo $message ;

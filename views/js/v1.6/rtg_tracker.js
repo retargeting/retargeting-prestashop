@@ -1,5 +1,5 @@
 /**
- * 2014-2019 Retargeting BIZ SRL
+ * 2014-2021 Retargeting BIZ SRL
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2019 Retargeting SRL
+ * @copyright 2014-2021 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 (function ()

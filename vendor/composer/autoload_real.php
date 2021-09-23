@@ -24,7 +24,7 @@ class ComposerAutoloaderInit5292e974df2c2664b6a5d6d52652f4cf
 
         require __DIR__ . '/platform_check.php';
 
-        spl_autoload_register(array('ComposerAutoloaderInit5292e974df2c2664b6a5d6d52652f4cf', 'loadClassLoader'), true, true);
+        spl_autoload_register(array('ComposerAutoloaderInit5292e974df2c2664b6a5d6d52652f4cf', 'loadClassLoader'), true, false);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(\dirname(__FILE__)));
         spl_autoload_unregister(array('ComposerAutoloaderInit5292e974df2c2664b6a5d6d52652f4cf', 'loadClassLoader'));
 
@@ -50,7 +50,7 @@ class ComposerAutoloaderInit5292e974df2c2664b6a5d6d52652f4cf
             }
         }
 
-        $loader->register(true);
+        $loader->register(false);
 
         return $loader;
     }

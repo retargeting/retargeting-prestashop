@@ -8,6 +8,9 @@
             "email": "info@retargeting.biz"
         }
     ],
+    "config": {
+        "prepend-autoloader": false
+    },
     "require": {
         "retargeting/retargeting-sdk": "dev-development"
     }
