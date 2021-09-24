@@ -139,7 +139,7 @@ class Rtg_tracker extends \Module
 
         return null;
     }
-
+/*
     public function hookActionProductUpdate()
     {
         $productId = Tools::getValue('id_product');
@@ -164,7 +164,7 @@ class Rtg_tracker extends \Module
             throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
         }
     }
-
+*/
     /**
      * @return string|null
      */
