@@ -25,24 +25,24 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => '1.0.4.x-dev',
+    'version' => '1.0.4.9999999-dev',
     'aliases' => 
     array (
     ),
-    'reference' => '39599b68ce6f6a2f8a9c1cfc11cff420d1d4a393',
+    'reference' => '679a65022ba93375df32b8590fc7b393df182ce5',
     'name' => 'retargeting/ra_tracker',
   ),
   'versions' => 
   array (
     'retargeting/ra_tracker' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => '1.0.4.x-dev',
+      'version' => '1.0.4.9999999-dev',
       'aliases' => 
       array (
       ),
-      'reference' => '39599b68ce6f6a2f8a9c1cfc11cff420d1d4a393',
+      'reference' => '679a65022ba93375df32b8590fc7b393df182ce5',
     ),
     'retargeting/retargeting-sdk' => 
     array (

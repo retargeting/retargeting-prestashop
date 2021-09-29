@@ -24,9 +24,9 @@
  */
 
 /**
- * Class Rtg_trackerDiscountsGeneratorModuleFrontController
+ * Class RtgDiscountsGeneratorModuleFrontController
  */
-class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontController
+class RtgtrackerDiscountsGeneratorModuleFrontController extends ModuleFrontController
 {
     /**
      * @var bool
