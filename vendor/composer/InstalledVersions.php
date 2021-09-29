@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '39599b68ce6f6a2f8a9c1cfc11cff420d1d4a393',
+    'reference' => '1858ff6f4ed2e108871c04941e9074cc15bb56cc',
     'name' => 'retargeting/ra_tracker',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '39599b68ce6f6a2f8a9c1cfc11cff420d1d4a393',
+      'reference' => '1858ff6f4ed2e108871c04941e9074cc15bb56cc',
     ),
     'retargeting/retargeting-sdk' => 
     array (

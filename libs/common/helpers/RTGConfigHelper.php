@@ -28,7 +28,7 @@
  */
 class RTGConfigHelper
 {
-    const MODULE_NAME = 'rtg_tracker';
+    const MODULE_NAME = 'rtgtracker';
 
     /**
      * Module version
@@ -87,6 +87,10 @@ class RTGConfigHelper
             'id'   => 'rtg_products_feed',
             'json' => false
         ],
+        'pushNotification'  => [
+            'id'   => 'rtg_push_notification',
+            'json' => false
+        ],
         'customersFeed' => [
             'id'   => 'rtg_customers_feed',
             'json' => false
@@ -106,8 +110,8 @@ class RTGConfigHelper
      */
     private static $hooks = [
         'displayHeader',
-        'displayFooter',
-        'actionProductUpdate'
+        'displayFooter'
+        //,'actionProductUpdate'
     ];
 
     /**
