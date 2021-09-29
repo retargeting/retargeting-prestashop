@@ -103,6 +103,14 @@ class RTGConfigHelper
             'id' => 'rtg_default_currency',
             'json' => false
         ],
+        'facebook' => [
+            'id' => 'rtg_facebook_key',
+            'json' => false
+        ],
+        'google' => [
+            'id' => 'rtg_google_key',
+            'json' => false
+        ]
     ];
 
     /**

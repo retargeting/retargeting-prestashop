@@ -188,7 +188,7 @@ class Rtgtracker extends Module
                 'order'             => []
             ];
 
-            if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
+            if (version_compare(_PS_VERSION_, '1.7.9.0', '<')) {
                 $controllersMap['search']                             = [ 'search_query' ];
                 $controllersMap['order']                              = 'cart';
                 $controllersMap['orderopc']                           = 'cart';
@@ -197,7 +197,7 @@ class Rtgtracker extends Module
 
             $controller = Tools::getValue('controller');
 
-            if (!empty($controllersMap[$controller])) {
+            if (isset($controllersMap[$controller])) {
                 $fnParams = [];
 
                 if (!empty($controllersMap[$controller])) {
@@ -279,14 +279,13 @@ class Rtgtracker extends Module
      * @throws PrestaShopException
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
-    protected function prepareProductJS($product = null)
+    protected function prepareProductJS($product)
     {
-        if ($product=== null) {
-            $productId = $this->getIdFromData($product);
+        
+        $productId = $this->getIdFromData($product);
 
-            if (empty($productId)) {
-                $productId = (int)Tools::getValue('id_product');
-            }
+        if (empty($productId)) {
+            $productId = (int)Tools::getValue('id_product');
         }
 
         if (!empty($productId)) {
@@ -415,7 +414,8 @@ class Rtgtracker extends Module
     }
     private $pushList = [
         'manifest.json' =>
-            '{"name":"{{BASE}}","short_name":"{{BASE}}","start_url":"/","display":"standalone","gcm_sender_id":"482941778795"}',
+            '{"name":"{{BASE}}","short_name":"{{BASE}}","start_url":"/","display":'.
+            '"standalone","gcm_sender_id":"482941778795"}',
         'OneSignalSDKUpdaterWorker.js' =>
             "importScripts('https://cdn.onesignal.com/sdks/OneSignalSDK.js');",
         'OneSignalSDKWorker.js' =>
@@ -435,13 +435,14 @@ class Rtgtracker extends Module
         return $this->linkBase;
     }
 
-    private function doPush(){
+    private function doPush()
+    {
         if ($this->isPushEnabled()) {
             foreach ($this->pushList as $k => $v) {
                 $outstream = fopen(_PS_ROOT_DIR_ . '/' . $k, "w+");
                 if ($outstream) {
                     if ($k === 'manifest.json') {
-                        $v = str_replace("{{BASE}}",$this->getLink(),$v);
+                        $v = str_replace("{{BASE}}", $this->getLink(), $v);
                     }
                     fwrite($outstream, $v);
                     fclose($outstream);
@@ -455,6 +456,29 @@ class Rtgtracker extends Module
             }
         }
     }
+    private static $validList = [
+        'google' => ['google-site-verification: ', '.html'],
+        'facebook' => ['', '']
+    ];
+
+    private function updateValid()
+    {
+        foreach (self::$validList as $key => $val) {
+            $ex = Configuration::get(RTGConfigHelper::getParamId($key));
+            if (!empty($ex)) {
+                unlink(_PS_ROOT_DIR_ . '/' . $ex . '.html');
+            }
+            $new = Tools::getValue(RTGConfigHelper::getParamId($key));
+            if ($new) {
+                $outstream = fopen(_PS_ROOT_DIR_ . '/' . $new . '.html', "w+");
+                if ($outstream) {
+                    fwrite($outstream, $val[0] . $new . $val[1]);
+                    fclose($outstream);
+                }
+            }
+        }
+    }
+
     private function isPushEnabled()
     {
         $paramVal = Configuration::get(RTGConfigHelper::getParamId('pushNotification'));
@@ -472,6 +496,7 @@ class Rtgtracker extends Module
             if (Tools::isEmpty(Tools::getValue(RTGConfigHelper::getParamId('trackingKey')))) {
                 $response = $this->displayError($this->l('The field `Tracking API Key` is required!'));
             } else {
+                $this->updateValid();
                 RTGConfigHelper::setParamsValuesFromRequest();
                 $this->doPush();
                 $response = $this->displayConfirmation($this->l('The settings have been updated.'));
@@ -649,7 +674,13 @@ class Rtgtracker extends Module
                         '<br /><b>',
                         $this->l('URL Cron Feed'),
                         '</b> ',
-                        $this->getLinkHTML(RTGLinkHelper::getModuleLink('ProductsFeed')),
+                        $this->getLinkHTML(
+                            Tools::substr(
+                                RTGLinkHelper::getModuleLink('ProductsFeed', ['static'=>'']),
+                                0,
+                                -1
+                            )
+                        ),
                         '<br /><br /><b>',
                         $this->l('Add this to your CronJobs'),
                         '</b><br />',
@@ -715,6 +746,18 @@ class Rtgtracker extends Module
                             'label' => $this->l('Disabled')
                         ]
                     ]
+                ],[
+                    'type'        => 'text',
+                    'label'       => $this->l('Facebook Domain Verification'),
+                    'name'        => RTGConfigHelper::getParamId('facebook'),
+                    'placeholder' => 'Key',
+                    'desc'        => $this->l('Domain Verification.')
+                ],[
+                    'type'        => 'text',
+                    'label'       => $this->l('Google Domain Verification'),
+                    'name'        => RTGConfigHelper::getParamId('google'),
+                    'placeholder' => 'Key',
+                    'desc'        => $this->l('Domain Verification.')
                 ]
             ],
             'submit' => [

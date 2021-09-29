@@ -15,15 +15,16 @@ class RtgtrackerValidareModuleFrontController extends ModuleFrontController
         'rtg_rest_key'
     ];
     private static $list = [
-        'google' => ['google-site-verification: ', '.html']
+        'google' => ['google-site-verification: ', '.html'],
         'facebook' => ['', '']
     ];
 
     public function initContent()
     {
         $key = Configuration::get(self::$params[0]);
-        
-        $Link  = Tools::getHttpHost();
+
+        $Link  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $Link .= "://{$_SERVER['HTTP_HOST']}";
         $checkKey = Tools::getValue('key');
         $isValid = $checkKey === $key;
         /* code, for, del, */

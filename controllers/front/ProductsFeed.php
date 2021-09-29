@@ -47,16 +47,16 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         parent::__construct();
         $this->id_lang = RTGContextHelper::getLanguageId();
         $this->file['cron'] = [
-            _PS_MODULE_DIR_ . 'rtg/'.$this->filename.'.tmp',
+            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename.'.tmp',
             'w+',
-            _PS_MODULE_DIR_ . 'rtg/'.$this->filename
+            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename
         ];
         $this->file['live'] = [
             'php://output',
             'w'
         ];
         $this->file['static'] = [
-            _PS_MODULE_DIR_ . 'rtg/'.$this->filename,
+            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename,
             'r'
         ];
         if (Tools::getIsset('cron')) {
@@ -79,9 +79,9 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
     {
         if ($this->isFeedEnabled()) {
             if ($this->is === 'static') {
-                if(file_exists(_PS_MODULE_DIR_ . 'rtg/'.$this->filename)){
+                if (file_exists($this->file['static'][0])) {
                     $this->getStatic();
-                }else{
+                } else {
                     $this->is = 'cron';
                     $this->getProductBatches();
                 }
