@@ -151,7 +151,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
             foreach ($batch as $_product) {
                 $extra_data = [
                     'categories' => [],
-                    'media gallery' => [],
+                    'media_gallery' => [],
                     'variations' => [],
                     'margin' => null
                 ];
@@ -179,7 +179,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                 
                 $extra_data['categories'] = $ctree;
 
-                $extra_data['media gallery'] =  $images['extra'];
+                $extra_data['media_gallery'] =  $images['extra'];
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
                 $psprice = number_format($product->getPrice(), 2, '.', '');
