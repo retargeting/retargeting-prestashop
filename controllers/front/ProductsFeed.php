@@ -66,7 +66,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         }
         if ($this->is !== 'cron') {
             header('Content-Disposition: attachment; filename='.$this->filename);
-            header('Content-type: text/csv');
+            header("Content-type: text/csv; charset=utf-8");
         }
     }
 
