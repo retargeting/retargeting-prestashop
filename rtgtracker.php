@@ -43,7 +43,7 @@ class Rtgtracker extends Module
     {
         $this->name = 'rtgtracker';
         $this->tab = 'analytics_stats';
-        $this->version = "1.0.7";
+        $this->version = "1.0.8";
         $this->author = 'Retargeting BIZ';
         $this->need_instance = 0;
         $this->bootstrap = true;
