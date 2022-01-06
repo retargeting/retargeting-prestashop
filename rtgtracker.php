@@ -702,8 +702,29 @@ class Rtgtracker extends Module
                             'label' => $this->l('Disabled')
                         ]
                     ]
-                ],
-                [
+                ],[
+                    'type'      => 'switch',
+                    'label'     => $this->l('Default Stock Status'),
+                    'desc'      => implode('', [
+                        '<b>',
+                        'Default stock Status if is negative quantity like "-1"',
+                        '</b> '
+                    ]),
+                    'name'      => RTGConfigHelper::getParamId('stockStatus'),
+                    'is_bool'   => true,
+                    'required'  => false,
+                    'values'    => [
+                        [
+                            'id' => RTGConfigHelper::getParamId('stockStatus') . '_on',
+                            'value' => 1,
+                            'label' => $this->l('In Stock')
+                        ],[
+                            'id' => RTGConfigHelper::getParamId('stockStatus') . '_off',
+                            'value' => 0,
+                            'label' => $this->l('Out of Stock')
+                        ]
+                    ]
+                ],[
                     'type'      => 'switch',
                     'label'     => $this->l('Customers Feed'),
                     'desc'      => implode('', [

@@ -116,6 +116,8 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         $outstream = fopen($this->file[$is][0], $this->file[$is][1]);
 
         $defLanguage = RTGConfigHelper::getParamValue('defaultLanguage');
+        $defStock = RTGConfigHelper::getParamValue('stockStatus');
+        $defStock = empty($defStock) ? 0 : $defStock;
 
         $loop = true;
 
@@ -192,19 +194,21 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                     continue;
                 }
 
-                $pprice = $pprice === 0 && $psprice !== 0 ?
+                $pprice = empty((float) $pprice) && !empty((float) $psprice) ?
                     $psprice : $pprice;
                 
-                $psprice = $psprice === 0 ? $pprice : $psprice;
+                $psprice = empty((float) $psprice) ? $pprice : $psprice;
 
-                $pprice = $psprice >= $pprice ? $psprice : $pprice;
+                $pprice = (float) $psprice >= (float) $pprice ? $psprice : $pprice;
+                
+                $stock = Product::getQuantity($_product['id_product']);
                
                 fputcsv($outstream, array(
                     'product id' => $product->id,
                     'product name' => is_array($product->name) ? $product->name[1] : $product->name,
                     'product url' => $link,
                     'image url' => $images['main'],
-                    'stock' => Product::getQuantity($_product['id_product']),
+                    'stock' => $stock < 0 ? $defStock : $stock,
                     'price' => $pprice,
                     'sale price' => $psprice,
                     'brand' => $manufacturer->name,
