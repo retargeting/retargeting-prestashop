@@ -91,6 +91,10 @@ class RTGConfigHelper
             'id'   => 'rtg_push_notification',
             'json' => false
         ],
+        'stockStatus'  => [
+            'id'   => 'rtg_stockStatus',
+            'json' => false
+        ],
         'customersFeed' => [
             'id'   => 'rtg_customers_feed',
             'json' => false
