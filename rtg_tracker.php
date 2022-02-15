@@ -34,7 +34,7 @@ if ((basename(__FILE__) === 'rtg_tracker.php')) {
 /**
  * Class Rtg_tracker
  */
-class Rtg_tracker extends \Module
+class Rtg_tracker extends Module
 {
     /**
      * Ra_Tracker constructor.
@@ -43,7 +43,7 @@ class Rtg_tracker extends \Module
     {
         $this->name = 'rtg_tracker';
         $this->tab = 'analytics_stats';
-        $this->version = "1.0.3";
+        $this->version = "1.0.8";
         $this->author = 'Retargeting BIZ';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -140,31 +140,32 @@ class Rtg_tracker extends \Module
         return null;
     }
 
-    // public function hookActionProductUpdate()
-    // {
-    //     $productId = Tools::getValue('id_product');
+/*
+    public function hookActionProductUpdate()
+    {
+        $productId = Tools::getValue('id_product');
 
-    //     if (!empty($productId) && RTGContextHelper::getJSBuilder()->hasRestApiKey()) {
-    //         $RTGProduct = new RTGProductModel($productId);
+        if (!empty($productId) && RTGContextHelper::getJSBuilder()->hasRestApiKey()) {
+            $RTGProduct = new RTGProductModel($productId);
 
-    //         $stockManagement = new \RetargetingSDK\Api\StockManagement();
-    //         $stockManagement->setProductId($RTGProduct->getId());
-    //         $stockManagement->setName($RTGProduct->getName());
-    //         $stockManagement->setImage($RTGProduct->getImg());
-    //         $stockManagement->setPrice($RTGProduct->getPrice());
-    //         $stockManagement->setPromo($RTGProduct->getPromo());
-    //         $stockManagement->setStock($RTGProduct->getInventory()['stock']);
-    //         $stockManagement->setUrl($RTGProduct->getUrl());
+            $stockManagement = new \RetargetingSDK\Api\StockManagement();
+            $stockManagement->setProductId($RTGProduct->getId());
+            $stockManagement->setName($RTGProduct->getName());
+            $stockManagement->setImage($RTGProduct->getImg());
+            $stockManagement->setPrice($RTGProduct->getPrice());
+            $stockManagement->setPromo($RTGProduct->getPromo());
+            $stockManagement->setStock($RTGProduct->getInventory()['stock']);
+            $stockManagement->setUrl($RTGProduct->getUrl());
 
-    //         $stockManagement->updateStock(
-    //             RTGContextHelper::getJSBuilder()->getRestApiKey(),
-    //             $stockManagement->prepareStockInfo()
-    //         );
-    //     } else {
-    //         throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
-    //     }
-    // }
-
+            $stockManagement->updateStock(
+                RTGContextHelper::getJSBuilder()->getRestApiKey(),
+                $stockManagement->prepareStockInfo()
+            );
+        } else {
+            throw new \RetargetingSDK\Exceptions\RTGException('Missing product id from data!');
+        }
+    }
+*/
     /**
      * @return string|null
      */
@@ -187,7 +188,7 @@ class Rtg_tracker extends \Module
                 'order'             => []
             ];
 
-            if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
+            if (version_compare(_PS_VERSION_, '1.7.9.0', '<')) {
                 $controllersMap['search']                             = [ 'search_query' ];
                 $controllersMap['order']                              = 'cart';
                 $controllersMap['orderopc']                           = 'cart';
@@ -196,7 +197,7 @@ class Rtg_tracker extends \Module
 
             $controller = Tools::getValue('controller');
 
-            if (Tools::getIsset($controllersMap[$controller])) {
+            if (isset($controllersMap[$controller])) {
                 $fnParams = [];
 
                 if (!empty($controllersMap[$controller])) {
@@ -280,6 +281,7 @@ class Rtg_tracker extends \Module
      */
     protected function prepareProductJS($product)
     {
+        
         $productId = $this->getIdFromData($product);
 
         if (empty($productId)) {
@@ -410,7 +412,79 @@ class Rtg_tracker extends \Module
             throw new \RetargetingSDK\Exceptions\RTGException('Missing customer id from data!');
         }
     }
+    private $pushList = [
+        'manifest.json' =>
+            '{"name":"{{BASE}}","short_name":"{{BASE}}","start_url":"/","display":'.
+            '"standalone","gcm_sender_id":"482941778795"}',
+        'OneSignalSDKUpdaterWorker.js' =>
+            "importScripts('https://cdn.onesignal.com/sdks/OneSignalSDK.js');",
+        'OneSignalSDKWorker.js' =>
+            "importScripts('https://cdn.onesignal.com/sdks/OneSignalSDK.js');"
+    ];
+    private $linkBase = null;
 
+    /**
+     * @return string
+     */
+    public function getLink()
+    {
+        if ($this->linkBase === null) {
+            $this->linkBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+            $this->linkBase .= "://{$_SERVER['HTTP_HOST']}";
+        }
+        return $this->linkBase;
+    }
+
+    private function doPush()
+    {
+        if ($this->isPushEnabled()) {
+            foreach ($this->pushList as $k => $v) {
+                $outstream = fopen(_PS_ROOT_DIR_ . '/' . $k, "w+");
+                if ($outstream) {
+                    if ($k === 'manifest.json') {
+                        $v = str_replace("{{BASE}}", $this->getLink(), $v);
+                    }
+                    fwrite($outstream, $v);
+                    fclose($outstream);
+                }
+            }
+        } else {
+            foreach ($this->pushList as $k => $v) {
+                if (file_exists(_PS_ROOT_DIR_ . '/' . $k)) {
+                    unlink(_PS_ROOT_DIR_ . '/' . $k);
+                }
+            }
+        }
+    }
+    private static $validList = [
+        'google' => ['google-site-verification: ', '.html'],
+        'facebook' => ['', '']
+    ];
+
+    private function updateValid()
+    {
+        foreach (self::$validList as $key => $val) {
+            $ex = Configuration::get(RTGConfigHelper::getParamId($key));
+            if (!empty($ex)) {
+                unlink(_PS_ROOT_DIR_ . '/' . $ex . '.html');
+            }
+            $new = Tools::getValue(RTGConfigHelper::getParamId($key));
+            if ($new) {
+                $outstream = fopen(_PS_ROOT_DIR_ . '/' . $new . '.html', "w+");
+                if ($outstream) {
+                    fwrite($outstream, $val[0] . $new . $val[1]);
+                    fclose($outstream);
+                }
+            }
+        }
+    }
+
+    private function isPushEnabled()
+    {
+        $paramVal = Configuration::get(RTGConfigHelper::getParamId('pushNotification'));
+
+        return (int) $paramVal > 0;
+    }
     /**
      * @return string
      */
@@ -422,8 +496,9 @@ class Rtg_tracker extends \Module
             if (Tools::isEmpty(Tools::getValue(RTGConfigHelper::getParamId('trackingKey')))) {
                 $response = $this->displayError($this->l('The field `Tracking API Key` is required!'));
             } else {
+                $this->updateValid();
                 RTGConfigHelper::setParamsValuesFromRequest();
-
+                $this->doPush();
                 $response = $this->displayConfirmation($this->l('The settings have been updated.'));
             }
         }
@@ -510,7 +585,7 @@ class Rtg_tracker extends \Module
                     'desc'      => implode(' ', [
                         'Both keys can be found in your',
                         $this->getLinkHTML(
-                            'https://retargeting.biz/admin/module/settings/docs-and-api',
+                            'https://retargeting.biz/plugins/custom/api-integration/add-subscriber',
                             'Retargeting'
                         ),
                         'account.'
@@ -553,7 +628,7 @@ class Rtg_tracker extends \Module
                     'label'     => $this->l('Add to cart button ID'),
                     'name'      => RTGConfigHelper::getParamId('cartBtnId'),
                     'desc'      => 'For more info check ' . $this->getLinkHTML(
-                        'https://retargeting.biz/plugins/custom/general',
+                        'https://retargeting.biz/plugins/custom',
                         'documentation'
                     ),
                     'placeholder' => '#cart-button-id'
@@ -563,7 +638,7 @@ class Rtg_tracker extends \Module
                     'label'     => $this->l('Price label id'),
                     'name'      => RTGConfigHelper::getParamId('priceLabelId'),
                     'desc'      => 'For more info check ' . $this->getLinkHTML(
-                        'https://retargeting.biz/plugins/custom/general',
+                        'https://retargeting.biz/plugins/custom',
                         'documentation'
                     ),
                     'placeholder' => '#price-label-id'
@@ -599,13 +674,19 @@ class Rtg_tracker extends \Module
                         '<br /><b>',
                         $this->l('URL Cron Feed'),
                         '</b> ',
-                        $this->getLinkHTML(RTGLinkHelper::getModuleLink('Static')),
+                        $this->getLinkHTML(
+                            Tools::substr(
+                                RTGLinkHelper::getModuleLink('ProductsFeed', ['static'=>'']),
+                                0,
+                                -1
+                            )
+                        ),
                         '<br /><br /><b>',
                         $this->l('Add this to your CronJobs'),
                         '</b><br />',
-                        '<code>0 */3 * * * /usr/bin/php '. _PS_MODULE_DIR_ .'modules/rtg_tracker/cron.php >/dev/null 2>&1</code>'
-                    ]
-                ),
+                        '<code>0 */3 * * * /usr/bin/php '. _PS_MODULE_DIR_
+                        .'rtg_tracker/cron.php >/dev/null 2>&1</code>'
+                    ]),
                     'name'      => RTGConfigHelper::getParamId('productsFeed'),
                     'is_bool'   => true,
                     'required'  => false,
@@ -621,8 +702,29 @@ class Rtg_tracker extends \Module
                             'label' => $this->l('Disabled')
                         ]
                     ]
-                ],
-                [
+                ],[
+                    'type'      => 'switch',
+                    'label'     => $this->l('Default Stock Status'),
+                    'desc'      => implode('', [
+                        '<b>',
+                        'Default stock Status if is negative quantity like "-1"',
+                        '</b> '
+                    ]),
+                    'name'      => RTGConfigHelper::getParamId('stockStatus'),
+                    'is_bool'   => true,
+                    'required'  => false,
+                    'values'    => [
+                        [
+                            'id' => RTGConfigHelper::getParamId('stockStatus') . '_on',
+                            'value' => 1,
+                            'label' => $this->l('In Stock')
+                        ],[
+                            'id' => RTGConfigHelper::getParamId('stockStatus') . '_off',
+                            'value' => 0,
+                            'label' => $this->l('Out of Stock')
+                        ]
+                    ]
+                ],[
                     'type'      => 'switch',
                     'label'     => $this->l('Customers Feed'),
                     'desc'      => implode('', [
@@ -646,7 +748,38 @@ class Rtg_tracker extends \Module
                             'label' => $this->l('Disabled')
                         ]
                     ]
-                ],
+                ],[
+                    'type'      => 'switch',
+                    'label'     => $this->l('Push Notification'),
+                    'desc'      => '<b>'.$this->l('This will add Push Notifications Files in Root').'</b> ',
+                    'name'      => RTGConfigHelper::getParamId('pushNotification'),
+                    'is_bool'   => true,
+                    'required'  => false,
+                    'values'    => [
+                        [
+                            'id' => RTGConfigHelper::getParamId('pushNotification') . '_on',
+                            'value' => 1,
+                            'label' => $this->l('Enabled')
+                        ],
+                        [
+                            'id' => RTGConfigHelper::getParamId('pushNotification') . '_off',
+                            'value' => 0,
+                            'label' => $this->l('Disabled')
+                        ]
+                    ]
+                ],[
+                    'type'        => 'text',
+                    'label'       => $this->l('Facebook Domain Verification'),
+                    'name'        => RTGConfigHelper::getParamId('facebook'),
+                    'placeholder' => 'Key',
+                    'desc'        => $this->l('Domain Verification.')
+                ],[
+                    'type'        => 'text',
+                    'label'       => $this->l('Google Domain Verification'),
+                    'name'        => RTGConfigHelper::getParamId('google'),
+                    'placeholder' => 'Key',
+                    'desc'        => $this->l('Domain Verification.')
+                ]
             ],
             'submit' => [
                 'name'  => 'raSubmitForm',

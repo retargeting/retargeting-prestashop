@@ -7,9 +7,9 @@
  */
 
 /**
- * Class RtgtrackerValidareModuleFrontController
+ * Class Rtg_trackerValidareModuleFrontController
  */
-class RtgtrackerValidareModuleFrontController extends ModuleFrontController
+class Rtg_trackerValidareModuleFrontController extends ModuleFrontController
 {
     private static $params = [
         'rtg_rest_key'

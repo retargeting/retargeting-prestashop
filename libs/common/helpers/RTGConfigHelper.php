@@ -28,7 +28,7 @@
  */
 class RTGConfigHelper
 {
-    const MODULE_NAME = 'rtgtracker';
+    const MODULE_NAME = 'rtg_tracker';
 
     /**
      * Module version
@@ -89,6 +89,10 @@ class RTGConfigHelper
         ],
         'pushNotification'  => [
             'id'   => 'rtg_push_notification',
+            'json' => false
+        ],
+        'stockStatus'  => [
+            'id'   => 'rtg_stockStatus',
             'json' => false
         ],
         'customersFeed' => [

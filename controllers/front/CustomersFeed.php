@@ -26,7 +26,7 @@
 /**
  * Class RtgCustomersFeedModuleFrontController
  */
-class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
+class Rtg_trackerCustomersFeedModuleFrontController extends ModuleFrontController
 {
     /**
      * @var bool

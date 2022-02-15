@@ -7,7 +7,7 @@
  */
 
 $_GET['fc'] = 'module';
-$_GET['module'] = 'rtgtracker';
+$_GET['module'] = 'rtg_tracker';
 
 $_GET['controller'] = 'ProductsFeed';
 

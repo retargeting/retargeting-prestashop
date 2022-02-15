@@ -26,7 +26,7 @@
 /**
  * Class RtgProductsFeedModuleFrontController
  */
-class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
+class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 {
     private $order_by = 'id_product';
     private $order_way = 'ASC';
@@ -47,16 +47,16 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         parent::__construct();
         $this->id_lang = RTGContextHelper::getLanguageId();
         $this->file['cron'] = [
-            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename.'.tmp',
+            _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename.'.tmp',
             'w+',
-            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename
+            _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename
         ];
         $this->file['live'] = [
             'php://output',
             'w'
         ];
         $this->file['static'] = [
-            _PS_MODULE_DIR_ . 'rtgtracker/'.$this->filename,
+            _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename,
             'r'
         ];
         if (Tools::getIsset('cron')) {
@@ -66,7 +66,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         }
         if ($this->is !== 'cron') {
             header('Content-Disposition: attachment; filename='.$this->filename);
-            header('Content-type: text/csv');
+            header("Content-type: text/csv; charset=utf-8");
         }
     }
 
@@ -116,6 +116,8 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         $outstream = fopen($this->file[$is][0], $this->file[$is][1]);
 
         $defLanguage = RTGConfigHelper::getParamValue('defaultLanguage');
+        $defStock = RTGConfigHelper::getParamValue('stockStatus');
+        $defStock = empty($defStock) ? 0 : $defStock;
 
         $loop = true;
 
@@ -151,7 +153,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
             foreach ($batch as $_product) {
                 $extra_data = [
                     'categories' => [],
-                    'media gallery' => [],
+                    'media_gallery' => [],
                     'variations' => [],
                     'margin' => null
                 ];
@@ -179,7 +181,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                 
                 $extra_data['categories'] = $ctree;
 
-                $extra_data['media gallery'] =  $images['extra'];
+                $extra_data['media_gallery'] =  $images['extra'];
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
                 $psprice = number_format($product->getPrice(), 2, '.', '');
@@ -192,19 +194,21 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                     continue;
                 }
 
-                $pprice = $pprice === 0 && $psprice !== 0 ?
+                $pprice = empty((float) $pprice) && !empty((float) $psprice) ?
                     $psprice : $pprice;
                 
-                $psprice = $psprice === 0 ? $pprice : $psprice;
+                $psprice = empty((float) $psprice) ? $pprice : $psprice;
 
-                $pprice = $psprice >= $pprice ? $psprice : $pprice;
+                $pprice = (float) $psprice >= (float) $pprice ? $psprice : $pprice;
+                
+                $stock = Product::getQuantity($_product['id_product']);
                
                 fputcsv($outstream, array(
                     'product id' => $product->id,
                     'product name' => is_array($product->name) ? $product->name[1] : $product->name,
                     'product url' => $link,
                     'image url' => $images['main'],
-                    'stock' => Product::getQuantity($_product['id_product']),
+                    'stock' => $stock < 0 ? $defStock : $stock,
                     'price' => $pprice,
                     'sale price' => $psprice,
                     'brand' => $manufacturer->name,
