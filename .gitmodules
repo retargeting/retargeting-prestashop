@@ -1,0 +1,3 @@
+[submodule "vendor/retargeting/retargeting-sdk"]
+	path = vendor/retargeting/retargeting-sdk
+	url = https://github.com/retargeting/php-sdk
