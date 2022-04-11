@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4a53d26a91f850e98b0485d9f9ce4f2e",
+    "packages": [
+        {
+            "name": "retargeting/retargeting-sdk",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/retargeting/php-sdk.git",
+                "reference": "c3cf5c5d17bc4357ad21e4ca0d0d38aa0366125b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/retargeting/php-sdk/zipball/c3cf5c5d17bc4357ad21e4ca0d0d38aa0366125b",
+                "reference": "c3cf5c5d17bc4357ad21e4ca0d0d38aa0366125b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.4",
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RetargetingSDK\\": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Retargeting Team",
+                    "email": "info@retargeting.biz"
+                }
+            ],
+            "description": "Retargeting SDK",
+            "support": {
+                "issues": "https://github.com/retargeting/php-sdk/issues",
+                "source": "https://github.com/retargeting/php-sdk/tree/development"
+            },
+            "time": "2019-05-29T09:00:25+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "retargeting/retargeting-sdk": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}
