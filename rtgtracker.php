@@ -181,6 +181,10 @@ class Rtgtracker extends Module
                 'manufacturer'      => [ 'manufacturer' ],
                 'cart'              => [],
                 'orderconfirmation' => [],
+                
+                'order-confirmation' => 'orderconfirmation',
+                'confirmare-comanda' => 'orderconfirmation',
+
                 'cms'               => [ 'cms' ],
                 'search'            => [ 'search_string' ],
                 'pagenotfound'      => [],
@@ -353,7 +357,8 @@ class Rtgtracker extends Module
         $orderId  = (int)Tools::getValue('id_order');
 
         if (empty($orderId)) {
-            $orderId  = (int) Tools::getValue('orderId');
+            $cartId  = (int) Tools::getValue('orderId');
+            $orderId = Order::getIdByCartId($cartId);
         }
         
         $RTGOrder = new RTGOrderModel($orderId);
