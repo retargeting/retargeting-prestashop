@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2021 Retargeting SRL
+ * @copyright 2014-2022 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -43,7 +43,7 @@ class Rtgtracker extends Module
     {
         $this->name = 'rtgtracker';
         $this->tab = 'analytics_stats';
-        $this->version = "1.0.9";
+        $this->version = "1.1.0";
         $this->author = 'Retargeting BIZ';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -181,6 +181,10 @@ class Rtgtracker extends Module
                 'manufacturer'      => [ 'manufacturer' ],
                 'cart'              => [],
                 'orderconfirmation' => [],
+                
+                'order-confirmation' => 'orderconfirmation',
+                'confirmare-comanda' => 'orderconfirmation',
+
                 'cms'               => [ 'cms' ],
                 'search'            => [ 'search_string' ],
                 'pagenotfound'      => [],
@@ -353,7 +357,8 @@ class Rtgtracker extends Module
         $orderId  = (int)Tools::getValue('id_order');
 
         if (empty($orderId)) {
-            $orderId  = (int) Tools::getValue('orderId');
+            $cartId  = (int) Tools::getValue('orderId');
+            $orderId = Order::getIdByCartId($cartId);
         }
         
         $RTGOrder = new RTGOrderModel($orderId);
