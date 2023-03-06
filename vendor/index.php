@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * 2014-2023 Retargeting BIZ SRL.
+ *
+ * @author    Retargeting SRL <info@retargeting.biz>
+ * @copyright 2014-2023 Retargeting SRL
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 

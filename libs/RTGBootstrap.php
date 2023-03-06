@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGBootstrap
+ * Class RTGBootstrap.
  */
 class RTGBootstrap
 {
@@ -34,7 +34,7 @@ class RTGBootstrap
     private static $version = 'v1.6';
 
     /**
-     * Initialisation
+     * Initialisation.
      */
     public static function run()
     {
@@ -47,7 +47,7 @@ class RTGBootstrap
     }
 
     /**
-     * Load common libraries
+     * Load common libraries.
      */
     public static function loadCommonLibs()
     {
@@ -59,20 +59,27 @@ class RTGBootstrap
 
         // Helpers
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGConfigHelper.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGContextHelper.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGLinkHelper.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/helpers/RTGRandomStringGenerator.php';
 
         // Models
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGCategoryModel.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGCustomerModel.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGManufacturerModel.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGOrderModel.php';
+
         require_once RTG_TRACKER_DIR . '/libs/common/models/RTGProductModel.php';
     }
 
     /**
-     * Load libraries by Prestashop version
+     * Load libraries by Prestashop version.
      */
     public static function loadDynamicLibs()
     {
@@ -81,7 +88,5 @@ class RTGBootstrap
     }
 }
 
-/**
- * Init bootstrapper
- */
+// Init bootstrapper
 RTGBootstrap::run();

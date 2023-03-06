@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,20 +19,20 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RtgProductsFeedModuleFrontController
+ * Class RtgProductsFeedModuleFrontController.
  */
 class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 {
+    protected $context;
     private $order_by = 'id_product';
     private $order_way = 'ASC';
     private $id_category = false;
     private $only_active = true;
-    protected $context = null;
     private $limit = 250;
 
     private $filename = 'retargeting.csv';
@@ -53,7 +53,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
         ];
         $this->file['live'] = [
             'php://output',
-            'w'
+            'w',
         ];
         $this->file['static'] = [
             _PS_MODULE_DIR_ . 'rtg_tracker/'.$this->filename,
@@ -64,21 +64,21 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
         } elseif (Tools::getIsset('static')) {
             $this->is = 'static';
         }
-        if ($this->is !== 'cron') {
-            header('Content-Disposition: attachment; filename='.$this->filename);
-            header("Content-type: text/csv; charset=utf-8");
+        if ('cron' !== $this->is) {
+            header('Content-Disposition: attachment; filename=' . $this->filename);
+            header('Content-type: text/csv; charset=utf-8');
         }
     }
 
     /**
-     * Display products list
+     * Display products list.
      *
      * @throws Exception
      */
     public function initContent()
     {
         if ($this->isFeedEnabled()) {
-            if ($this->is === 'static') {
+            if ('static' === $this->is) {
                 if (file_exists($this->file['static'][0])) {
                     $this->getStatic();
                 } else {
@@ -94,17 +94,17 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         exit(0);
     }
+
     private function getStatic()
     {
-
         $outstream = fopen($this->file['static'][0], $this->file['static'][1]);
 
         if (false === $outstream) {
-            exit("fail");
+            exit('fail');
         }
 
         echo fread($outstream, filesize($this->file['static'][0]));
-        
+
         fclose($outstream);
     }
 
@@ -121,7 +121,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         $loop = true;
 
-        fputcsv($outstream, array(
+        fputcsv($outstream, [
             'product id',
             'product name',
             'product url',
@@ -131,8 +131,8 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
             'sale price',
             'brand',
             'category',
-            'extra data'
-        ), ',', '"');
+            'extra data',
+        ], ',', '"');
 
         do {
             $batch = Product::getProducts(
@@ -143,10 +143,10 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $this->order_way,
                 $this->id_category,
                 $this->only_active,
-                $this->context
+                $this->context,
             );
 
-            if (sizeof($batch) == 0) {
+            if (0 == sizeof($batch)) {
                 $loop = false;
             }
 
@@ -155,7 +155,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'categories' => [],
                     'media_gallery' => [],
                     'variations' => [],
-                    'margin' => null
+                    'margin' => null,
                 ];
 
                 $product = new Product($_product['id_product'], false, $defLanguage);
@@ -166,10 +166,10 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $category->id = is_array($category->id) ? $category->id[0] : $category->id;
                 $category->name = is_array($category->name) ? $category->name[0] : $category->name;
 
-                $category->name = empty($category->name) ? "Root" : $category->name;
+                $category->name = empty($category->name) ? 'Root' : $category->name;
                 $ctree = [];
                 foreach ($categories as $c) {
-                    if ($c['name'] !== null) {
+                    if (null !== $c['name']) {
                         $ctree[$c['id_category']] = $c['name'];
                     }
                 }
@@ -178,32 +178,32 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $ctree[$category->id] = $category->name;
 
                 $images = $this->getProductImages($product);
-                
+
                 $extra_data['categories'] = $ctree;
 
-                $extra_data['media_gallery'] =  $images['extra'];
+                $extra_data['media_gallery'] = $images['extra'];
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
                 $psprice = number_format($product->getPrice(), 2, '.', '');
 
                 $link = RTGLinkHelper::getProductLink($product);
-                
-                if (empty($product->name) ||
-                    empty($link) ||
-                    empty($images['main']) || ( empty((float) $pprice) && empty((float) $psprice) )) {
+
+                if (empty($product->name)
+                    || empty($link)
+                    || empty($images['main']) || (empty((float) $pprice) && empty((float) $psprice))) {
                     continue;
                 }
 
                 $pprice = empty((float) $pprice) && !empty((float) $psprice) ?
                     $psprice : $pprice;
-                
+
                 $psprice = empty((float) $psprice) ? $pprice : $psprice;
 
                 $pprice = (float) $psprice >= (float) $pprice ? $psprice : $pprice;
-                
+
                 $stock = Product::getQuantity($_product['id_product']);
-               
-                fputcsv($outstream, array(
+
+                fputcsv($outstream, [
                     'product id' => $product->id,
                     'product name' => is_array($product->name) ? $product->name[1] : $product->name,
                     'product url' => $link,
@@ -213,21 +213,21 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                     'sale price' => $psprice,
                     'brand' => $manufacturer->name,
                     'category' => $category->name,
-                    'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES)
-                ), ',', '"');
+                    'extra data' => json_encode($extra_data, JSON_UNESCAPED_SLASHES),
+                ], ',', '"');
             }
 
             $start += $this->limit;
         } while ($loop);
-        
+
         fclose($outstream);
 
-        if ($is === 'cron') {
+        if ('cron' === $is) {
             copy($this->file[$is][0], $this->file[$is][2]);
-            
+
             header('Content-Type: text/json');
 
-            echo json_encode(['status'=>'succes']);
+            echo json_encode(['status' => 'succes']);
         }
     }
 
@@ -245,12 +245,12 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
     {
         $result = [
             'main' => '',
-            'extra' => []
+            'extra' => [],
         ];
-        $imageId    = null;
-        $imagesIds  = [];
+        $imageId = null;
+        $imagesIds = [];
         $attrImages = [];
-        $defaultId  = $product->getDefaultIdProductAttribute();
+        $defaultId = $product->getDefaultIdProductAttribute();
 
         if ($defaultId) {
             $attrImages = Product::_getAttributeImageAssociations($defaultId);
@@ -258,7 +258,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         $coverImageId = $product->getCoverWs();
 
-        if ((int)$coverImageId > 0) {
+        if ((int) $coverImageId > 0) {
             if (!$attrImages || in_array($coverImageId, $attrImages)) {
                 $imageId = $coverImageId;
             }
@@ -266,7 +266,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         if (!$imageId && $attrImages) {
             foreach ($attrImages as $attrImageId) {
-                if ((int)$attrImageId > 0) {
+                if ((int) $attrImageId > 0) {
                     $imageId = $attrImageId;
 
                     break;
@@ -278,7 +278,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
 
         if ($productImages) {
             foreach ($productImages as $productImage) {
-                $productImageId = (int)$productImage['id_image'];
+                $productImageId = (int) $productImage['id_image'];
 
                 if ($productImageId > 0) {
                     if (!$imageId) {
@@ -290,7 +290,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
             }
         }
 
-        if ((int)$imageId > 0) {
+        if ((int) $imageId > 0) {
             $url = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imageId);
             $result['main'] = $url;
         }
@@ -300,7 +300,7 @@ class Rtg_trackerProductsFeedModuleFrontController extends ModuleFrontController
                 $result['extra'][] = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imgId);
             }
         }
-        
+
         return $result;
     }
 }

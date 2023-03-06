@@ -1,8 +1,9 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
+ *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -12,32 +13,32 @@
 class Rtg_trackerValidareModuleFrontController extends ModuleFrontController
 {
     private static $params = [
-        'rtg_rest_key'
+        'rtg_rest_key',
     ];
     private static $list = [
         'google' => ['google-site-verification: ', '.html'],
-        'facebook' => ['', '']
+        'facebook' => ['', ''],
     ];
 
     public function initContent()
     {
         $key = Configuration::get(self::$params[0]);
 
-        $Link  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $Link = (isset($_SERVER['HTTPS']) && 'on' === $_SERVER['HTTPS'] ? 'https' : 'http');
         $Link .= "://{$_SERVER['HTTP_HOST']}";
         $checkKey = Tools::getValue('key');
         $isValid = $checkKey === $key;
-        /* code, for, del, */
+        // code, for, del,
         if (!$isValid) {
-            $message = "Wrong Key RTG Key!";
-        } elseif ($isValid && Tools::getValue('code') !== false && Tools::getValue('del')) {
+            $message = 'Wrong Key RTG Key!';
+        } elseif ($isValid && false !== Tools::getValue('code') && Tools::getValue('del')) {
             unlink(_PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html');
 
             $message = 'File Deleted, Please Check ' . $Link . '/' . Tools::getValue('code') . '.html';
-        } elseif ($isValid && Tools::getValue('code') !== false) {
+        } elseif ($isValid && false !== Tools::getValue('code')) {
             $for = Tools::getValue('for', 'google');
             $do = self::$list[$for];
-            $outstream = fopen(_PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html', "w+");
+            $outstream = fopen(_PS_ROOT_DIR_ . '/' . Tools::getValue('code') . '.html', 'w+');
             if ($outstream) {
                 fwrite($outstream, $do[0] . Tools::getValue('code') . $do[1]);
                 fclose($outstream);
@@ -47,7 +48,7 @@ class Rtg_trackerValidareModuleFrontController extends ModuleFrontController
         }
 
         echo $message;
-            
+
         exit(0);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,18 +19,20 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGOrderModel
+ * Class RTGOrderModel.
  */
 class RTGOrderModel extends \RetargetingSDK\Order
 {
     /**
      * RTGOrderModel constructor.
-     * @param $oderId
+     *
+     * @param mixed $oderId
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      * @throws \RetargetingSDK\Exceptions\RTGException
@@ -41,7 +43,8 @@ class RTGOrderModel extends \RetargetingSDK\Order
     }
 
     /**
-     * @param $orderId
+     * @param mixed $orderId
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      * @throws \RetargetingSDK\Exceptions\RTGException
@@ -63,7 +66,7 @@ class RTGOrderModel extends \RetargetingSDK\Order
             $this->setShipping(round($order->total_shipping, 2));
             $this->setTotal($order->total_paid);
 
-            if (!empty($orderCustomer->birthday) || $orderCustomer->birthday == '0000-00-00') {
+            if (!empty($orderCustomer->birthday) || '0000-00-00' == $orderCustomer->birthday) {
                 $this->setBirthday(date('d-m-Y', strtotime($orderCustomer->birthday)));
             }
 
@@ -73,10 +76,10 @@ class RTGOrderModel extends \RetargetingSDK\Order
             $discounts = $order->getCartRules();
 
             if (!empty($discounts)) {
-                $discountCode = array();
+                $discountCode = [];
 
                 foreach ($discounts as $discount) {
-                    $cartRule = new CartRule((int)$discount['id_cart_rule']);
+                    $cartRule = new CartRule((int) $discount['id_cart_rule']);
 
                     $discountCode[] = $cartRule->code;
                 }
@@ -97,7 +100,6 @@ class RTGOrderModel extends \RetargetingSDK\Order
             }
 
             foreach ($order->getProducts() as $product) {
-
                 $product['total_price_tax_incl'] = RTGContextHelper::convertCurrency($product['total_price_tax_incl']);
 
                 $this->setProduct(
@@ -105,7 +107,7 @@ class RTGOrderModel extends \RetargetingSDK\Order
                     $product['product_quantity'],
                     $product['total_price_tax_incl'],
                     // $product['product_attribute_id']
-                    ''
+                    '',
                 );
             }
         } else {

@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RtgDiscountsGeneratorModuleFrontController
+ * Class RtgDiscountsGeneratorModuleFrontController.
  */
 class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontController
 {
@@ -49,11 +49,11 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
     private $discountTypes = [
         'reduction_amount',
         'reduction_percent',
-        'free_shipping'
+        'free_shipping',
     ];
 
     /**
-     * @var float|int|bool
+     * @var bool|float|int
      */
     private $discountValue;
 
@@ -68,7 +68,7 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
     private $discountNumMax = 5000;
 
     /**
-     * Display products list
+     * Display products list.
      *
      * @throws Exception
      */
@@ -77,13 +77,13 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
         if ($this->isGeneratorEnabled()) {
             $discountCodes = [];
 
-            $discountAttempts    = 0;
+            $discountAttempts = 0;
             $discountMaxAttempts = $this->discountNum <= 2000 ? 1000 : ceil($this->discountNum / 2);
 
             $stringGenerator = new RTGRandomStringGenerator();
             $stringGenerator->setAlphabet(
                 implode(range('A', 'Z'))
-                . implode(range(0, 9))
+                . implode(range(0, 9)),
             );
 
             while (count($discountCodes) < $this->discountNum && $discountAttempts < $discountMaxAttempts) {
@@ -98,24 +98,24 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
                     $cartRule->name[$lang] = $discountName;
                 }
 
-                $cartRule->description           = $discountDesc;
-                $cartRule->code                  = $discountCode;
-                $cartRule->active                = 1;
-                $cartRule->date_from             = date('Y-m-d H:i:s');
-                $cartRule->date_to               = date(
+                $cartRule->description = $discountDesc;
+                $cartRule->code = $discountCode;
+                $cartRule->active = 1;
+                $cartRule->date_from = date('Y-m-d H:i:s');
+                $cartRule->date_to = date(
                     'Y-m-d h:i:s',
-                    mktime(0, 0, 0, date('m'), date('d'), date('Y') + 1)
+                    mktime(0, 0, 0, date('m'), date('d'), date('Y') + 1),
                 );
-                $cartRule->quantity              = 1;
-                $cartRule->quantity_per_user     = 1;
-                $cartRule->partial_use           = false;
+                $cartRule->quantity = 1;
+                $cartRule->quantity_per_user = 1;
+                $cartRule->partial_use = false;
                 $cartRule->cart_rule_restriction = true;
                 $cartRule->{$this->discountType} = $this->discountValue;
 
                 if ($cartRule->add()) {
                     $discountCodes[] = $discountCode;
                 } else {
-                    $discountAttempts++;
+                    ++$discountAttempts;
                 }
             }
 
@@ -138,9 +138,9 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
             return false;
         }
 
-        $value = (float)Tools::getValue('value');
+        $value = (float) Tools::getValue('value');
 
-        if ($this->discountType == 'free_shipping') {
+        if ('free_shipping' == $this->discountType) {
             $this->discountValue = true;
         } elseif ($value > 0) {
             $this->discountValue = $value;
@@ -148,7 +148,7 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
             return false;
         }
 
-        $num = (int)Tools::getValue('num');
+        $num = (int) Tools::getValue('num');
 
         if ($num > 0 && $num <= $this->discountNumMax) {
             $this->discountNum = $num;
@@ -164,7 +164,7 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
      */
     private function isGeneratorEnabled()
     {
-        $storedRestKey   = RTGConfigHelper::getParamValue('restKey');
+        $storedRestKey = RTGConfigHelper::getParamValue('restKey');
         $providedRestKey = Tools::getValue('key');
 
         return !empty($storedRestKey)
@@ -174,14 +174,15 @@ class Rtg_trackerDiscountsGeneratorModuleFrontController extends ModuleFrontCont
     }
 
     /**
-     * @param $content
      * @param bool $status
+     * @param mixed $content
+     *
      * @return false|string
      */
     private function outputResponse($content, $status = false)
     {
         $response = [
-            'status' => $status
+            'status' => $status,
         ];
 
         if (!$status) {

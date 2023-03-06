@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,18 +19,19 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGLinkHelper
+ * Class RTGLinkHelper.
  */
 class RTGLinkHelper
 {
     /**
-     * @param null|string $controller
+     * @param string|null $controller
      * @param array $params
+     *
      * @return string
      */
     public static function getModuleLink($controller = null, $params = [])
@@ -39,7 +40,8 @@ class RTGLinkHelper
     }
 
     /**
-     * @param $categoryId
+     * @param mixed $categoryId
+     *
      * @return string
      */
     public static function getCategoryLink($categoryId)
@@ -48,9 +50,11 @@ class RTGLinkHelper
     }
 
     /**
-     * @param Product|int $product
+     * @param int|Product $product
      * @param null $productAttributeId
+     *
      * @return string
+     *
      * @throws PrestaShopException
      */
     public static function getProductLink($product, $productAttributeId = null)
@@ -65,29 +69,31 @@ class RTGLinkHelper
             $productAttributeId,
             false,
             false,
-            true
+            true,
         );
 
-        if ( !filter_var($newLink, FILTER_VALIDATE_URL) ) {
-            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+        if (!filter_var($newLink, FILTER_VALIDATE_URL)) {
+            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
         }
 
         return $newLink;
     }
 
     /**
-     * @param $name
-     * @param $ids
      * @param null $type
+     * @param mixed $name
+     * @param mixed $ids
+     *
      * @return string
      */
     public static function getImageLink($name, $ids, $type = null)
     {
         $newLink = Context::getContext()->link->getImageLink(is_array($name) ? $name[1] : $name, $ids, $type);
-        
-        if ( !filter_var($newLink, FILTER_VALIDATE_URL) ) {
-            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+
+        if (!filter_var($newLink, FILTER_VALIDATE_URL)) {
+            $newLink = filter_var($newLink, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
         }
+
         return $newLink;
     }
 
@@ -100,10 +106,10 @@ class RTGLinkHelper
             'cart',
             null,
             RTGContextHelper::getLanguageId(),
-            [ 'action' => 'show' ],
+            ['action' => 'show'],
             false,
             null,
-            true
+            true,
         );
     }
 
@@ -112,14 +118,15 @@ class RTGLinkHelper
      */
     public static function getCurrentLink()
     {
-        $currentLink  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $currentLink = (isset($_SERVER['HTTPS']) && 'on' === $_SERVER['HTTPS'] ? 'https' : 'http');
         $currentLink .= "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
         return $currentLink;
     }
 
     /**
-     * @param $link
+     * @param mixed $link
+     *
      * @return string
      */
     public static function getPathAndQuery($link)

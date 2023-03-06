@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,18 +19,20 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGCategoryModel
+ * Class RTGCategoryModel.
  */
 class RTGCategoryModel extends \RetargetingSDK\Category
 {
     /**
      * RTGCategoryModel constructor.
-     * @param $categoryId
+     *
+     * @param mixed $categoryId
+     *
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
     public function __construct($categoryId)
@@ -39,7 +41,8 @@ class RTGCategoryModel extends \RetargetingSDK\Category
     }
 
     /**
-     * @param $categoryId
+     * @param mixed $categoryId
+     *
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
     private function setCategoryData($categoryId)
@@ -56,11 +59,11 @@ class RTGCategoryModel extends \RetargetingSDK\Category
                 $breadcrumbs = [];
 
                 $parentsCategories = $category->getParentsCategories();
-                
+
                 foreach ($parentsCategories as $pCategoryIdx => $pCategory) {
                     if (isset($pCategory['id_category'])
                         && is_string($pCategory['name'])
-                        && (int)$pCategory['active'] === 1
+                        && 1 === (int) $pCategory['active']
                         && $pCategory['id_category'] != $categoryId
                         && $pCategory['is_root_category'] < 1
                     ) {
@@ -73,9 +76,9 @@ class RTGCategoryModel extends \RetargetingSDK\Category
                         }
 
                         $breadcrumbs[] = [
-                            'id'     => $pCategory['id_category'],
-                            'name'   => is_array($pCategory['name']) ? $pCategory['name'][1] : $pCategory['name'],
-                            'parent' => $parentId
+                            'id' => $pCategory['id_category'],
+                            'name' => is_array($pCategory['name']) ? $pCategory['name'][1] : $pCategory['name'],
+                            'parent' => $parentId,
                         ];
                     }
                 }

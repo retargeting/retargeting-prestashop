@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGContextHelper
+ * Class RTGContextHelper.
  */
 class RTGContextHelper
 {
@@ -56,6 +56,7 @@ class RTGContextHelper
 
     /**
      * @param null $param
+     *
      * @return array
      */
     public static function getLanguages($param = null)
@@ -74,11 +75,12 @@ class RTGContextHelper
      */
     public static function getLanguageId()
     {
-        return self::getLanguage() ? (int)self::getLanguage()->id : null;
+        return self::getLanguage() ? (int) self::getLanguage()->id : null;
     }
 
     /**
      * @param null $param
+     *
      * @return Shop|null
      */
     public static function getShop($param = null)
@@ -127,8 +129,8 @@ class RTGContextHelper
     /**
      * @return array
      */
-    public static function getAllLanguages() {
-
+    public static function getAllLanguages()
+    {
         $languages = Language::getLanguages();
         $formatedLanguages = [];
         foreach ($languages as $key => $language) {
@@ -140,11 +142,11 @@ class RTGContextHelper
 
     /**
      * @return array
+     *
      * @throws PrestaShopDatabaseException
      */
-    public static function getAllCurrencies() {
-
-
+    public static function getAllCurrencies()
+    {
         $currencies = CurrencyCore::getCurrencies();
         $formatedCurrenies = [];
         foreach ($currencies as $key => $currency) {
@@ -155,11 +157,12 @@ class RTGContextHelper
     }
 
     /**
-     * @param $price
      * @param $currencyId
+     * @param mixed $price
      */
-    public static function convertCurrency($price) {
-        GLOBAL $currency;
+    public static function convertCurrency($price)
+    {
+        global $currency;
 
         $convertedPrice = $price;
         $defaultCurrency = RTGConfigHelper::getParamValue('defaultCurrency');
@@ -170,6 +173,5 @@ class RTGContextHelper
         }
 
         return $convertedPrice;
-
     }
 }
