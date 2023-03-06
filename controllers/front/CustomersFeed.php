@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RtgCustomersFeedModuleFrontController
+ * Class RtgCustomersFeedModuleFrontController.
  */
 class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
 {
@@ -66,7 +66,7 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
     /**
      * @var null
      */
-    private $token = null;
+    private $token;
 
     /**
      * ra_trackerProductsFeedModuleFrontController constructor.
@@ -80,13 +80,12 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
     }
 
     /**
-     * Display products list
+     * Display products list.
      *
      * @throws Exception
      */
     public function initContent()
     {
-        
         if ($this->isFeedEnabled()) {
             if (!empty($this->_token)) {
                 $raCustomersFeed = new \RetargetingSDK\CustomersFeed($this->_token);
@@ -96,7 +95,7 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
                     $raCustomer->setFirstName($customer['firstname']);
                     $raCustomer->setLastName($customer['lastname']);
                     $raCustomer->setEmail($customer['email']);
-                    $raCustomer->setStatus($customer['active'] == 1);
+                    $raCustomer->setStatus(1 == $customer['active']);
 
                     // TO DO
                     // $raCustomer->setPhone(null);
@@ -105,7 +104,7 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
                 }
 
                 // Module link with per_page param
-                $moduleLink = RTGLinkHelper::getModuleLink('CustomersFeed', [ 'per_page' => $this->perPage ]);
+                $moduleLink = RTGLinkHelper::getModuleLink('CustomersFeed', ['per_page' => $this->perPage]);
 
                 // Previous page
                 $prevPage = $this->currentPage - 1;
@@ -139,16 +138,17 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
 
     /**
      * @return array|false|mysqli_result|PDOStatement|resource|null
+     *
      * @throws PrestaShopDatabaseException
      */
     protected function getCustomers()
     {
         $offset = ($this->currentPage - 1) * $this->perPage;
-        $limit  = $this->perPage;
+        $limit = $this->perPage;
 
-        $sql  = 'SELECT `id_customer`, `email`, `firstname`, `lastname`, `active` ';
+        $sql = 'SELECT `id_customer`, `email`, `firstname`, `lastname`, `active` ';
         $sql .= 'FROM `' . _DB_PREFIX_ . 'customer` ';
-        $sql .= 'WHERE 1 ' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . ' ';
+        $sql .= 'WHERE 1 ' . shop::addSqlRestriction(Shop::SHARE_CUSTOMER) . ' ';
 
         if ($this->onlyActive) {
             $sql .= 'AND `active` = 1 ';
@@ -161,7 +161,7 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
     }
 
     /**
-     * Validate request params
+     * Validate request params.
      */
     private function validateReqParams()
     {
@@ -188,12 +188,12 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
     }
 
     /**
-     * Set total rows
+     * Set total rows.
      */
     private function setTotalRows()
     {
-        $sql  = 'SELECT COUNT(DISTINCT c.`id_customer`) AS total ';
-        $sql .= 'FROM `'._DB_PREFIX_.'customer` c';
+        $sql = 'SELECT COUNT(DISTINCT c.`id_customer`) AS total ';
+        $sql .= 'FROM `' . _DB_PREFIX_ . 'customer` c';
 
         if ($this->onlyActive) {
             $sql .= '  WHERE c.`active` = 1';
@@ -202,7 +202,7 @@ class RtgtrackerCustomersFeedModuleFrontController extends ModuleFrontController
         $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
         $this->totalRows = $row['total'];
-        $this->lastPage  = $row['total'] > 0 ? ceil($row['total'] / $this->perPage) : 1;
+        $this->lastPage = $row['total'] > 0 ? ceil($row['total'] / $this->perPage) : 1;
     }
 
     /**

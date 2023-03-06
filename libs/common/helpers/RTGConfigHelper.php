@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,102 +19,142 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGConfigHelper
+ * Class RTGConfigHelper.
  */
 class RTGConfigHelper
 {
-    const MODULE_NAME = 'rtgtracker';
+    public const MODULE_NAME = 'rtgtracker';
 
     /**
-     * Module version
+     * Module version.
      */
-    const MODULE_VERSION = '1.0.0';
+    public const MODULE_VERSION = '1.0.0';
 
     /**
-     * Module key
+     * Module key.
      */
-    const MODULE_KEY = '77bc1af5937025631c4c8009a56191be';
+    public const MODULE_KEY = '77bc1af5937025631c4c8009a56191be';
 
     /**
-     * Minimum version of Prestashop
+     * Minimum version of Prestashop.
      */
-    const MINIMUM_VERSION = '1.6.1.04';
+    public const MINIMUM_VERSION = '1.6.1.04';
 
     /**
-     * Maximum version of Prestashop
+     * Maximum version of Prestashop.
      */
-    const MAXIMUM_VERSION = _PS_VERSION_;
+    public const MAXIMUM_VERSION = _PS_VERSION_;
 
     /**
-     * Enable/disable debugging
+     * Enable/disable debugging.
      */
-    const ENABLE_DEBUG = _PS_MODE_DEV_;
+    public const ENABLE_DEBUG = _PS_MODE_DEV_;
 
     /**
      * @var array
      */
     private static $params = [
-        'trackingKey'   => [
-            'id'   => 'rtg_tracking_key',
-            'json' => false
-        ],
-        'restKey'       => [
-            'id'   => 'rtg_rest_key',
+        'trackingKey' => [
+            'id' => 'rtg_tracking_key',
             'json' => false,
         ],
-        'cartBtnId'     => [
-            'id'   => 'rtg_cart_btn_id',
+        'restKey' => [
+            'id' => 'rtg_rest_key',
             'json' => false,
         ],
-        'priceLabelId'  => [
-            'id'   => 'rtg_price_label_id',
+        'cartBtnId' => [
+            'id' => 'rtg_cart_btn_id',
             'json' => false,
         ],
-        'cartUrl'       => [
-            'id'   => 'rtg_cart_url',
-            'json' => false
+        'priceLabelId' => [
+            'id' => 'rtg_price_label_id',
+            'json' => false,
         ],
-        'helpPages'     => [
-            'id'   => 'rtg_help_pages',
-            'json' => true
+        'cartUrl' => [
+            'id' => 'rtg_cart_url',
+            'json' => false,
         ],
-        'productsFeed'  => [
-            'id'   => 'rtg_products_feed',
-            'json' => false
+        'helpPages' => [
+            'id' => 'rtg_help_pages',
+            'json' => true,
+            'serialized' => false,
         ],
-        'pushNotification'  => [
-            'id'   => 'rtg_push_notification',
-            'json' => false
+        'productsFeed' => [
+            'id' => 'rtg_products_feed',
+            'json' => false,
         ],
-        'stockStatus'  => [
-            'id'   => 'rtg_stockStatus',
-            'json' => false
+        'pushNotification' => [
+            'id' => 'rtg_push_notification',
+            'json' => false,
+        ],
+        'stockStatus' => [
+            'id' => 'rtg_stockStatus',
+            'json' => false,
         ],
         'customersFeed' => [
-            'id'   => 'rtg_customers_feed',
-            'json' => false
+            'id' => 'rtg_customers_feed',
+            'json' => false,
         ],
         'defaultLanguage' => [
             'id' => 'rtg_default_language',
-            'json' => false
+            'json' => false,
         ],
         'defaultCurrency' => [
             'id' => 'rtg_default_currency',
-            'json' => false
+            'json' => false,
         ],
         'facebook' => [
             'id' => 'rtg_facebook_key',
-            'json' => false
+            'json' => false,
         ],
         'google' => [
             'id' => 'rtg_google_key',
-            'json' => false
-        ]
+            'json' => false,
+        ],
+        'rec_status' => [
+            'id' => 'rtg_rec_status',
+            'json' => false,
+        ],
+        'home_page' => [
+            'id' => 'rtg_home_page',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'category_page' => [
+            'id' => 'rtg_category_page',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'product_page' => [
+            'id' => 'rtg_product_page',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'shopping_cart' => [
+            'id' => 'rtg_shopping_cart',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'thank_you_page' => [
+            'id' => 'rtg_thank_you_page',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'search_page' => [
+            'id' => 'rtg_search_page',
+            'json' => true,
+            'serialized' => true,
+        ],
+        'page_404' => [
+            'id' => 'rtg_page_404',
+            'json' => true,
+            'serialized' => true,
+        ],
     ];
 
     /**
@@ -122,8 +162,10 @@ class RTGConfigHelper
      */
     private static $hooks = [
         'displayHeader',
-        'displayFooter'
-        //,'actionProductUpdate'
+        'displayFooter',
+        'displayBeforeBodyClosingTag',
+        // 'displayFooterAfter'
+        // ,'actionProductUpdate'
     ];
 
     /**
@@ -133,10 +175,8 @@ class RTGConfigHelper
     {
         $response = true;
 
-        foreach (self::$params as $param)
-        {
-            if (!Configuration::updateValue($param['id'], ''))
-            {
+        foreach (self::$params as $param) {
+            if (!Configuration::updateValue($param['id'], '')) {
                 $response = false;
 
                 break;
@@ -153,10 +193,8 @@ class RTGConfigHelper
     {
         $response = true;
 
-        foreach (self::$params as $param)
-        {
-            if (!Configuration::deleteByName($param['id']))
-            {
+        foreach (self::$params as $param) {
+            if (!Configuration::deleteByName($param['id'])) {
                 $response = false;
 
                 break;
@@ -175,7 +213,8 @@ class RTGConfigHelper
     }
 
     /**
-     * @param $paramKey
+     * @param mixed $paramKey
+     *
      * @return mixed|null
      */
     public static function getParamId($paramKey)
@@ -183,10 +222,21 @@ class RTGConfigHelper
         return !empty(self::$params[$paramKey]) ? self::$params[$paramKey]['id'] : null;
     }
 
+    public static function getSerialized($value)
+    {
+        return base64_encode(is_array($value) ? serialize($value) : [$value]);
+    }
+
+    public static function getUnserialized($value)
+    {
+        return unserialize(base64_decode($value));
+    }
+
     /**
-     * @param $paramKey
      * @param bool $mapById
      * @param bool $forInputs
+     * @param mixed $paramKey
+     *
      * @return array|mixed|string
      */
     public static function getParamValue($paramKey, $mapById = false, $forInputs = false)
@@ -194,12 +244,11 @@ class RTGConfigHelper
         $getParamVal = function ($paramKey) {
             $paramVal = Configuration::get(self::$params[$paramKey]['id']);
 
-            if (self::$params[$paramKey]['json'])
-            {
-                $paramVal = json_decode($paramVal, true);
+            if (self::$params[$paramKey]['json']) {
+                $paramVal = self::$params[$paramKey]['serialized'] ?
+                    self::getUnserialized($paramVal) : json_decode($paramVal, true);
 
-                if (!is_array($paramVal))
-                {
+                if (!is_array($paramVal)) {
                     $paramVal = [];
                 }
             }
@@ -207,16 +256,13 @@ class RTGConfigHelper
             return $paramVal;
         };
 
-        if (is_array($paramKey))
-        {
+        if (is_array($paramKey)) {
             $paramValues = [];
 
-            foreach ($paramKey as $pk)
-            {
+            foreach ($paramKey as $pk) {
                 $pKey = ($mapById && !empty(self::$params[$pk]['id'])) ? self::$params[$pk]['id'] : $pk;
 
-                if ($forInputs && !empty(self::$params[$pk]['json']))
-                {
+                if ($forInputs && !empty(self::$params[$pk]['json'])) {
                     $pKey .= '[]';
                 }
 
@@ -225,38 +271,33 @@ class RTGConfigHelper
 
             return $paramValues;
         }
-        else
-        {
-            return $getParamVal($paramKey);
-        }
+
+        return $getParamVal($paramKey);
     }
 
     /**
-     * @param string|array $paramKey
+     * @param array|string $paramKey
      * @param mixed $paramVal
+     *
      * @return bool
      */
     public static function setParamValue($paramKey, $paramVal = null)
     {
-        if (!is_array($paramKey))
-        {
+        if (!is_array($paramKey)) {
             $paramKey = [
-                $paramKey => $paramVal
+                $paramKey => $paramVal,
             ];
         }
 
-        foreach ($paramKey as $key => $val)
-        {
-            if (isset(self::$params[$key]))
-            {
-                if (self::$params[$key]['json'])
-                {
-                    if (!is_array($val))
-                    {
+        foreach ($paramKey as $key => $val) {
+            if (isset(self::$params[$key])) {
+                if (self::$params[$key]['json']) {
+                    if (!is_array($val)) {
                         $val = [$val];
                     }
 
-                    $val = json_encode($val);
+                    $val = self::$params[$key]['serialized'] ?
+                        self::getSerialized($val) : json_encode($val);
                 }
                 Configuration::updateValue(self::$params[$key]['id'], $val);
             }
@@ -272,8 +313,7 @@ class RTGConfigHelper
     {
         $params = [];
 
-        foreach (self::$params as $paramKey => $param)
-        {
+        foreach (self::$params as $paramKey => $param) {
             $params[$paramKey] = Tools::getValue($param['id']);
         }
 

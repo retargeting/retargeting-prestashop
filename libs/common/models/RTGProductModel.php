@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,18 +19,20 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGProductModel
+ * Class RTGProductModel.
  */
 class RTGProductModel extends \RetargetingSDK\Product
 {
     /**
      * RTGProductModel constructor.
-     * @param $productId
+     *
+     * @param mixed $productId
+     *
      * @throws PrestaShopException
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
@@ -40,7 +42,8 @@ class RTGProductModel extends \RetargetingSDK\Product
     }
 
     /**
-     * @param $productId
+     * @param mixed $productId
+     *
      * @throws PrestaShopException
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
@@ -58,7 +61,7 @@ class RTGProductModel extends \RetargetingSDK\Product
             $this->setProductCategory($product->id_category_default);
             $this->setInventory([
                 'variations' => false,
-                'stock'      => $product->checkQty(1)
+                'stock' => $product->checkQty(1),
             ]);
         } else {
             throw new \RetargetingSDK\Exceptions\RTGException('Fail to load product with id: ' . $productId);
@@ -67,14 +70,15 @@ class RTGProductModel extends \RetargetingSDK\Product
 
     /**
      * @param Product $product
+     *
      * @throws Exception
      */
     private function setProductImages($product)
     {
-        $imageId    = null;
-        $imagesIds  = [];
+        $imageId = null;
+        $imagesIds = [];
         $attrImages = [];
-        $defaultId  = $product->getDefaultIdProductAttribute();
+        $defaultId = $product->getDefaultIdProductAttribute();
 
         if ($defaultId) {
             $attrImages = Product::_getAttributeImageAssociations($defaultId);
@@ -82,7 +86,7 @@ class RTGProductModel extends \RetargetingSDK\Product
 
         $coverImageId = $product->getCoverWs();
 
-        if ((int)$coverImageId > 0) {
+        if ((int) $coverImageId > 0) {
             if (!$attrImages || in_array($coverImageId, $attrImages)) {
                 $imageId = $coverImageId;
             }
@@ -90,7 +94,7 @@ class RTGProductModel extends \RetargetingSDK\Product
 
         if (!$imageId && $attrImages) {
             foreach ($attrImages as $attrImageId) {
-                if ((int)$attrImageId > 0) {
+                if ((int) $attrImageId > 0) {
                     $imageId = $attrImageId;
 
                     break;
@@ -102,7 +106,7 @@ class RTGProductModel extends \RetargetingSDK\Product
 
         if ($productImages) {
             foreach ($productImages as $productImage) {
-                $productImageId = (int)$productImage['id_image'];
+                $productImageId = (int) $productImage['id_image'];
 
                 if ($productImageId > 0) {
                     if (!$imageId) {
@@ -114,7 +118,7 @@ class RTGProductModel extends \RetargetingSDK\Product
             }
         }
 
-        if ((int)$imageId > 0) {
+        if ((int) $imageId > 0) {
             $url = RTGLinkHelper::getImageLink($product->link_rewrite, $product->id . '-' . $imageId);
 
             $this->setImg($url);
@@ -131,6 +135,7 @@ class RTGProductModel extends \RetargetingSDK\Product
 
     /**
      * @param Product $product
+     *
      * @throws Exception
      *
      * Deprecated:
@@ -139,7 +144,7 @@ class RTGProductModel extends \RetargetingSDK\Product
     private function setProductPrices($product)
     {
         $regularPrice = $product->getPrice(true, null, 6, null, false, false);
-        $promoPrice   = $product->getPrice();
+        $promoPrice = $product->getPrice();
 
         $regularPrice = RTGContextHelper::convertCurrency($regularPrice);
         $promoPrice = RTGContextHelper::convertCurrency($promoPrice);
@@ -152,7 +157,8 @@ class RTGProductModel extends \RetargetingSDK\Product
     }
 
     /**
-     * @param $manufacturerId
+     * @param mixed $manufacturerId
+     *
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
     private function setProductManufacturer($manufacturerId)
@@ -165,7 +171,8 @@ class RTGProductModel extends \RetargetingSDK\Product
     }
 
     /**
-     * @param $categoryId
+     * @param mixed $categoryId
+     *
      * @throws \RetargetingSDK\Exceptions\RTGException
      */
     private function setProductCategory($categoryId)
@@ -173,7 +180,7 @@ class RTGProductModel extends \RetargetingSDK\Product
         if (!empty($categoryId)) {
             $RTGCategory = new RTGCategoryModel($categoryId);
 
-            $this->setCategory([ $RTGCategory->getData(false) ]);
+            $this->setCategory([$RTGCategory->getData(false)]);
         }
     }
 }

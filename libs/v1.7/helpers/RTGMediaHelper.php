@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGMediaHelper
+ * Class RTGMediaHelper.
  */
 class RTGMediaHelper implements RTGMediaHelperInterface
 {
@@ -47,19 +47,19 @@ class RTGMediaHelper implements RTGMediaHelperInterface
             ],*/
             [
                 'ra_tracker_2',
-                ('modules/' . RTGConfigHelper::MODULE_NAME . '/views/js/v1.7/rtg_tracker.js'),
+                'modules/' . RTGConfigHelper::MODULE_NAME . '/views/js/v1.7/rtg_tracker.js',
                 [
-                    'position'      => 'bottom',
-                    'priority'      => 1001,
-                    'inline'        => false,
-                    'server'        => 'local',
-                    'attributes'    => 'async'
-                ]
-            ]
+                    'position' => 'bottom',
+                    'priority' => 1001,
+                    'inline' => false,
+                    'server' => 'local',
+                    'attributes' => 'async',
+                ],
+            ],
         ];
 
         foreach ($scripts as $script) {
-            call_user_func_array([ RTGContextHelper::getController(), 'registerJavascript' ], $script);
+            call_user_func_array([RTGContextHelper::getController(), 'registerJavascript'], $script);
         }
     }
 }

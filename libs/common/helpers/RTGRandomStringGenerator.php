@@ -1,6 +1,6 @@
 <?php
 /**
- * 2014-2021 Retargeting BIZ SRL
+ * 2014-2023 Retargeting BIZ SRL.
  *
  * NOTICE OF LICENSE
  *
@@ -19,12 +19,12 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Retargeting SRL <info@retargeting.biz>
- * @copyright 2014-2022 Retargeting SRL
+ * @copyright 2014-2023 Retargeting SRL
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 /**
- * Class RTGRandomStringGenerator
+ * Class RTGRandomStringGenerator.
  */
 class RTGRandomStringGenerator
 {
@@ -45,7 +45,7 @@ class RTGRandomStringGenerator
             $this->setAlphabet(
                 implode(range('a', 'z'))
                 . implode(range('A', 'Z'))
-                . implode(range(0, 9))
+                . implode(range(0, 9)),
             );
         }
     }
@@ -61,13 +61,14 @@ class RTGRandomStringGenerator
 
     /**
      * @param int $length
+     *
      * @return string
      */
     public function generate($length)
     {
         $token = '';
 
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $randomKey = $this->getRandomInteger(0, $this->alphabetLength);
             $token .= $this->alphabet[$randomKey];
         }
@@ -78,6 +79,7 @@ class RTGRandomStringGenerator
     /**
      * @param int $min
      * @param int $max
+     *
      * @return int
      */
     protected function getRandomInteger($min, $max)
@@ -105,9 +107,8 @@ class RTGRandomStringGenerator
 
             // Discard irrelevant bits.
             $rnd = $rnd & $filter;
-
         } while ($rnd >= $range);
 
-        return ($min + $rnd);
+        return $min + $rnd;
     }
 }
