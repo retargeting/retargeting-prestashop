@@ -156,6 +156,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                     'media_gallery' => [],
                     'variations' => [],
                     'margin' => null,
+                    'product_weight' => null
                 ];
 
                 $product = new Product($_product['id_product'], false, $defLanguage);
@@ -182,6 +183,8 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                 $extra_data['categories'] = $ctree;
 
                 $extra_data['media_gallery'] = $images['extra'];
+                
+                $extra_data['product_weight'] = $this->getProductWeight($product);
 
                 $pprice = number_format($product->getPriceWithoutReduct(), 2, '.', '');
                 $psprice = number_format($product->getPrice(), 2, '.', '');
@@ -302,5 +305,30 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
         }
 
         return $result;
+    }
+
+    private function getProductWeight($product) {
+        $productWeight = isset($product->weight) ? $product->weight : 0.1;
+        $productWeightMeasurmentUnit = $this->getProductWeightMeasurementUnit();
+
+        if (strtolower($productWeightMeasurmentUnit) !== 'kg') {
+            $productWeight = $this->convertWeightToKg($productWeight,$productWeightMeasurmentUnit);
+        }
+
+        return floatval(number_format($productWeight,2,'.',','));
+    }
+
+    private function getProductWeightMeasurementUnit() {
+        return Configuration::get('PS_WEIGHT_UNIT');
+    }
+
+    private function convertWeightToKg($weight,$unit) {
+        if(strtolower($unit) === 'g') {
+            return $weight/1000;
+        }else if(strtolower($unit) === 'lb' || strtolower($unit) === 'lbs') {
+            return $weight*0.45359237;
+        }else if(strtolower($unit) === 'oz') {
+            return $weight/35.27396195;
+        } else return $weight;
     }
 }
