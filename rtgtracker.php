@@ -159,7 +159,7 @@ class Rtgtracker extends Module
         // $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
         $this->name = 'rtgtracker';
         $this->tab = 'advertising_marketing';
-        $this->version = '1.1.5';
+        $this->version = '1.1.7';
         $this->author = 'Retargeting BIZ';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -538,6 +538,14 @@ class Rtgtracker extends Module
         RTGContextHelper::getJSBuilder()->saveOrder($RTGOrder);
         RTGContextHelper::getRecommendationEngine()->markThankYouPage();
     }
+
+    /**
+     * @for PS version 8 or higher
+     */
+    protected function prepareOrderJs()
+      {
+        $this->prepareOrderconfirmationJs();
+      }
 
     protected function prepareCmsJS($page)
     {
