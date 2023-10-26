@@ -165,12 +165,12 @@ class RTGContextHelper
         global $currency;
 
         $convertedPrice = $price;
-        $defaultCurrency = RTGConfigHelper::getParamValue('defaultCurrency');
-
-        if ($currency->id != $defaultCurrency) {
-            $defaultCurrency = CurrencyCore::getCurrencyInstance($defaultCurrency);
-            $convertedPrice = Tools::convertPriceFull($price, $currency, $defaultCurrency);
-        }
+//        $defaultCurrency = RTGConfigHelper::getParamValue('defaultCurrency');
+//
+//        if ($currency->id != $defaultCurrency) {
+//            $defaultCurrency = CurrencyCore::getCurrencyInstance($defaultCurrency);
+//            $convertedPrice = Tools::convertPriceFull($price, $currency, $defaultCurrency);
+//        }
 
         return $convertedPrice;
     }

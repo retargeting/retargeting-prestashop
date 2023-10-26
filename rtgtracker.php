@@ -539,6 +539,14 @@ class Rtgtracker extends Module
         RTGContextHelper::getRecommendationEngine()->markThankYouPage();
     }
 
+    /**
+     * @for PS version 8 or higher
+     */
+    protected function prepareOrderJs()
+      {
+        $this->prepareOrderconfirmationJs();
+      }
+
     protected function prepareCmsJS($page)
     {
         $pageId = $this->getIdFromData($page);
