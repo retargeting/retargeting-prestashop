@@ -107,7 +107,7 @@ class RTGOrderModel extends \RetargetingSDK\Order
                     $product['product_quantity'],
                     $product['total_price_tax_incl'],
                     // $product['product_attribute_id']
-                    '',
+                    ''
                 );
             }
         } else {

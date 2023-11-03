@@ -708,7 +708,7 @@ class Rtgtracker extends Module
         $helper->fields_value = RTGConfigHelper::getParamValue(array_keys(RTGConfigHelper::getParams()), true, true);
         // Return the form
         return $helper->generateForm(
-            $this->getFormFields(),
+            $this->getFormFields()
         );
     }
 
@@ -740,7 +740,7 @@ class Rtgtracker extends Module
                         'Both keys can be found in your',
                         $this->getLinkHTML(
                             'https://retargeting.biz/plugins/custom/api-integration/add-subscriber',
-                            'Retargeting',
+                            'Retargeting'
                         ),
                         'account.',
                     ]),
@@ -789,7 +789,7 @@ class Rtgtracker extends Module
                     'name' => RTGConfigHelper::getParamId('cartBtnId'),
                     'desc' => 'For more info check ' . $this->getLinkHTML(
                         'https://retargeting.biz/plugins/custom',
-                        'documentation',
+                        'documentation'
                     ),
                     'placeholder' => '#cart-button-id',
                 ],
@@ -799,7 +799,7 @@ class Rtgtracker extends Module
                     'name' => RTGConfigHelper::getParamId('priceLabelId'),
                     'desc' => 'For more info check ' . $this->getLinkHTML(
                         'https://retargeting.biz/plugins/custom',
-                        'documentation',
+                        'documentation'
                     ),
                     'placeholder' => '#price-label-id',
                 ],
@@ -838,8 +838,8 @@ class Rtgtracker extends Module
                             Tools::substr(
                                 RTGLinkHelper::getModuleLink('ProductsFeed', ['static' => '']),
                                 0,
-                                -1,
-                            ),
+                                -1
+                            )
                         ),
                         '<br /><br /><b>',
                         $this->l('Add this to your CronJobs'),

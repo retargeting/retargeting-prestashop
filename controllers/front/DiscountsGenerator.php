@@ -83,7 +83,7 @@ class RtgtrackerDiscountsGeneratorModuleFrontController extends ModuleFrontContr
             $stringGenerator = new RTGRandomStringGenerator();
             $stringGenerator->setAlphabet(
                 implode(range('A', 'Z'))
-                . implode(range(0, 9)),
+                . implode(range(0, 9))
             );
 
             while (count($discountCodes) < $this->discountNum && $discountAttempts < $discountMaxAttempts) {
@@ -104,7 +104,7 @@ class RtgtrackerDiscountsGeneratorModuleFrontController extends ModuleFrontContr
                 $cartRule->date_from = date('Y-m-d H:i:s');
                 $cartRule->date_to = date(
                     'Y-m-d h:i:s',
-                    mktime(0, 0, 0, date('m'), date('d'), date('Y') + 1),
+                    mktime(0, 0, 0, date('m'), date('d'), date('Y') + 1)
                 );
                 $cartRule->quantity = 1;
                 $cartRule->quantity_per_user = 1;

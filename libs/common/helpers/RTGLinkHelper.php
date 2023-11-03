@@ -69,7 +69,7 @@ class RTGLinkHelper
             $productAttributeId,
             false,
             false,
-            true,
+            true
         );
 
         if (!filter_var($newLink, FILTER_VALIDATE_URL)) {
@@ -109,7 +109,7 @@ class RTGLinkHelper
             ['action' => 'show'],
             false,
             null,
-            true,
+            true
         );
     }
 

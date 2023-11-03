@@ -143,7 +143,7 @@ class RtgtrackerProductsFeedModuleFrontController extends ModuleFrontController
                 $this->order_way,
                 $this->id_category,
                 $this->only_active,
-                $this->context,
+                $this->context
             );
 
             if (0 == sizeof($batch)) {
